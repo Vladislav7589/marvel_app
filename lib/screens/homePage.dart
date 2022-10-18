@@ -1,7 +1,8 @@
 
 import 'package:flutter/material.dart';
 import '../constants.dart';
-import '../widgets/carouselSlider.dart';
+
+import '../widgets/pageViewSlider.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -45,7 +46,10 @@ class HomePageState extends State<HomePage> {
                   ),
                 ),
                 //const Expanded(child: SizedBox()),
-                const Expanded(flex: 12, child: Carousel()),
+                const Expanded(flex: 12,
+                    child:  //Carousel()
+                              PageViewSlider()
+                ),
                 const Expanded(
                     flex: 1,
                     child: SizedBox())

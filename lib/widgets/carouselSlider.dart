@@ -5,14 +5,14 @@ import '../constants.dart';
 import 'heroCard.dart';
 
 
-class Carousel extends StatefulWidget {
-  const Carousel({super.key});
+class CarouselCustom extends StatefulWidget {
+  const CarouselCustom({super.key});
 
   @override
-  State<Carousel> createState() => CarouselState();
+  State<CarouselCustom> createState() => CarouselCustomState();
 }
 
-class CarouselState extends State<Carousel> {
+class CarouselCustomState extends State<CarouselCustom> {
   late int activePage;
   double currPageValue = 0.0;
 

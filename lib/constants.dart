@@ -9,3 +9,4 @@ Map<String, String> map = {
 };
 
 const Color backgroundColor = Color(0xff2a262b);
+const double scaleFactor = 0.8;
