@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 import '../constants.dart';
+import '../utils/colorProvider.dart';
 import 'heroCard.dart';
 
 
@@ -14,8 +16,6 @@ class CarouselCustom extends StatefulWidget {
 
 class CarouselCustomState extends State<CarouselCustom> {
   late int activePage;
-  double currPageValue = 0.0;
-
 
   @override
   void initState() {
@@ -25,11 +25,13 @@ class CarouselCustomState extends State<CarouselCustom> {
 
   @override
   Widget build(BuildContext context) {
-    return  CarouselSlider.builder(
+    ColorProvider state = Provider.of<ColorProvider>(context);
+    return   CarouselSlider.builder(
             options: CarouselOptions(
               viewportFraction: 0.85,
               height: double.infinity,
               initialPage: 0,
+              scrollPhysics:  const BouncingScrollPhysics(),
               enlargeStrategy: CenterPageEnlargeStrategy.scale,
               enableInfiniteScroll: false,
               enlargeCenterPage: true,
@@ -37,6 +39,7 @@ class CarouselCustomState extends State<CarouselCustom> {
               onPageChanged: (index, reason) {
                 setState(() {
                   activePage = index;
+                  state.changeColor();
                 });
               },
             ),

@@ -1,7 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants.dart';
+import '../utils/colorProvider.dart';
 import '../widgets/heroCard.dart';
 
 class PageViewSlider extends StatefulWidget {
@@ -36,6 +38,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
 
   @override
   Widget build(BuildContext context) {
+    ColorProvider state = Provider.of<ColorProvider>(context);
     return PageView.builder(
           physics: const BouncingScrollPhysics(),
           itemCount: map.length,
@@ -43,6 +46,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
           onPageChanged: (page) {
             setState(() {
               activePage = page;
+              state.changeColor();
             });
           },
           itemBuilder: (context, pagePosition) => pageViewAnimation(pagePosition));
