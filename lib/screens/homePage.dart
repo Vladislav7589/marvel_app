@@ -57,9 +57,10 @@ class HomePageState extends State<HomePage> {
                         ),
                       ),
                       //const Expanded(child: SizedBox()),
-                     Expanded(flex: 12,
-                          child: CarouselCustom()
-                                  //PageViewSlider()
+                     const Expanded(
+                         flex: 12,
+                         child: //CarouselCustom()    - кастомная реализация через CarouselSlider
+                                   PageViewSlider() // - реализация с помощью PageView
                       ),
                       const Expanded(
                           flex: 1,

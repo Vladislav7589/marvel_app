@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// Отрисовка разноцветного треуольника
 class DrawTriangle extends CustomPainter {
   Color color;
 

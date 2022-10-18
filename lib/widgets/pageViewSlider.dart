@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
@@ -14,18 +12,20 @@ class PageViewSlider extends StatefulWidget {
 }
 
 class _PageViewSliderState extends State<PageViewSlider> {
-
   PageController pageController = PageController(viewportFraction: 0.80);
   late int activePage;
-  double currPageValue = 0.0;
+
+  // значение текущей страницы
+  double currentPageValue = 0.0;
 
   @override
   void initState() {
     super.initState();
     activePage = 0;
+    //слушатель изменения страницы
     pageController.addListener(() {
       setState(() {
-        currPageValue = pageController.page!;
+        currentPageValue = pageController.page!;
       });
     });
   }
@@ -40,37 +40,40 @@ class _PageViewSliderState extends State<PageViewSlider> {
   Widget build(BuildContext context) {
     ColorProvider state = Provider.of<ColorProvider>(context);
     return PageView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: map.length,
-          controller: pageController,
-          onPageChanged: (page) {
-            setState(() {
-              activePage = page;
-              state.changeColor();
-            });
-          },
-          itemBuilder: (context, pagePosition) => pageViewAnimation(pagePosition));
-        }
+        physics: const BouncingScrollPhysics(),
+        itemCount: map.length,
+        controller: pageController,
+        onPageChanged: (page) {
+          setState(() {
+            activePage = page;
+            state.changeColor();
+          });
+        },
+        itemBuilder: (context, pagePosition) =>
+            pageViewAnimation(pagePosition));
+  }
+
+  // маштабирование страниц
   Widget pageViewAnimation(int position) {
     Matrix4 matrix = Matrix4.identity();
     double currentScale;
 
-    if (position == currPageValue.floor()) {
-      currentScale = 1 - (currPageValue - position) * (1 - scaleFactor);
-    } else if (position == currPageValue.floor() + 1) {
-      currentScale = scaleFactor + (currPageValue - position + 1) * (1 - scaleFactor);
-    } else if (position == currPageValue.floor() - 1) {
-      currentScale = 1 - (currPageValue - position) * (1 - scaleFactor);
+    if (position == currentPageValue.floor()) {
+      currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
+    } else if (position == currentPageValue.floor() + 1) {
+      currentScale =
+          scaleFactor + (currentPageValue - position + 1) * (1 - scaleFactor);
+    } else if (position == currentPageValue.floor() - 1) {
+      currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
     } else {
       currentScale = scaleFactor;
     }
     matrix = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
     return Transform(
-      transformHitTests : true,
+      transformHitTests: true,
       alignment: Alignment.center,
       transform: matrix,
       child: HeroCard(pagePosition: position),
     );
   }
-
 }
