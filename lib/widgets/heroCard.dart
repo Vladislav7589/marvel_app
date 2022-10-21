@@ -23,7 +23,7 @@ class HeroCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            map.values.elementAt(pagePosition),
+            heroes.values.elementAt(pagePosition),
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
@@ -32,7 +32,7 @@ class HeroCard extends StatelessWidget {
             left: 30,
             bottom: 30,
             child: Text(
-              map.keys.elementAt(pagePosition),
+              heroes.keys.elementAt(pagePosition),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 30,

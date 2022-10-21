@@ -15,13 +15,6 @@ class CarouselCustom extends StatefulWidget {
 }
 
 class CarouselCustomState extends State<CarouselCustom> {
-  late int activePage;
-
-  @override
-  void initState() {
-    super.initState();
-    activePage = 0;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +31,11 @@ class CarouselCustomState extends State<CarouselCustom> {
               scrollDirection: Axis.horizontal,
               onPageChanged: (index, reason) {
                 setState(() {
-                  activePage = index;
                   state.changeColor();
                 });
               },
             ),
-            itemCount: map.length,
+            itemCount: heroes.length,
             itemBuilder: (BuildContext context, int pagePosition,
                 int realIndex) {
               return HeroCard(pagePosition: pagePosition,);

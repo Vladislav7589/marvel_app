@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-Map<String, String> map = {
+Map<String, String> heroes = {
   "Deadpool": "assets/deadpool.jpg",
   "Spider-man": "assets/spider-man.jpg",
   "Thanos": "assets/thanos.jpg",

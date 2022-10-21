@@ -13,7 +13,6 @@ class PageViewSlider extends StatefulWidget {
 
 class _PageViewSliderState extends State<PageViewSlider> {
   PageController pageController = PageController(viewportFraction: 0.80);
-  late int activePage;
 
   // значение текущей страницы
   double currentPageValue = 0.0;
@@ -21,7 +20,6 @@ class _PageViewSliderState extends State<PageViewSlider> {
   @override
   void initState() {
     super.initState();
-    activePage = 0;
     //слушатель изменения страницы
     pageController.addListener(() {
       setState(() {
@@ -41,11 +39,10 @@ class _PageViewSliderState extends State<PageViewSlider> {
     ColorProvider state = Provider.of<ColorProvider>(context);
     return PageView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: map.length,
+        itemCount: heroes.length,
         controller: pageController,
         onPageChanged: (page) {
           setState(() {
-            activePage = page;
             state.changeColor();
           });
         },
@@ -70,7 +67,6 @@ class _PageViewSliderState extends State<PageViewSlider> {
     }
     matrix = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
     return Transform(
-      transformHitTests: true,
       alignment: Alignment.center,
       transform: matrix,
       child: HeroCard(pagePosition: position),
