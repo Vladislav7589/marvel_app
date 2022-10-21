@@ -1,66 +1,55 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HeroDetails extends StatelessWidget {
   final int pagePosition;
 
   const HeroDetails({Key? key, required this.pagePosition}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.transparent,
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.transparent
-        ),
-        body: Hero(
-          transitionOnUserGestures: true,
-          tag: heroes.keys.elementAt(pagePosition),
-          child:  Material(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(elevation: 0.0, backgroundColor: Colors.transparent),
+      body: Hero(
+        transitionOnUserGestures: true,
+        tag: heroes.keys.elementAt(pagePosition),
+        child: Material(
             //color: Theme.of(context).primaryColor.withOpacity(0.25),
             type: MaterialType.transparency, // likely needed
-            child: widget()
-          ),
-        ),
-      );
+            child: widget()),
+      ),
+    );
   }
 
-  Widget widget(){
+  Widget widget() {
     return Stack(
       children: [
-         Image.network(
-             heroImageNetwork.values.elementAt(pagePosition),
-            fit: BoxFit.fitHeight,
+        CachedNetworkImage(
+          fit: BoxFit.cover,
+          height: double.infinity,
+          width: double.infinity,
+          imageUrl: heroImageNetwork.values.elementAt(pagePosition),
+          placeholder: (context, url) => Image.asset(
+            heroes.values.elementAt(pagePosition),
+            fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
-            frameBuilder: (context, child, isLoaded, _) {
-              if (isLoaded == null) {
-                return Shimmer.fromColors(
-                    baseColor: backgroundColor,
-                    highlightColor: Colors.white10,
-                    child: Container(
-                    color: backgroundColor,
-                ));
-              }
-              return child;
-            }
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
         Container(
-          margin: EdgeInsets.only(left: 30,bottom: 30),
+          margin: const EdgeInsets.only(left: 30, bottom: 30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment : CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 heroes.keys.elementAt(pagePosition),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -68,7 +57,7 @@ class HeroDetails extends StatelessWidget {
               ),
               Text(
                 description.values.elementAt(pagePosition),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 25,
                   //fontWeight: FontWeight.bold,

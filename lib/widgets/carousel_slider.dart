@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../utils/colorProvider.dart';
-import 'heroCard.dart';
+import '../utils/color_provider.dart';
+import 'hero_card.dart';
 
 
 class CarouselCustom extends StatefulWidget {

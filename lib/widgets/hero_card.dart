@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
-import '../screens/heroDetails.dart';
-import '../utils/colorProvider.dart';
+import '../screens/hero_details.dart';
+import '../utils/color_provider.dart';
 
 class HeroCard extends StatelessWidget {
 
@@ -49,6 +49,7 @@ class HeroCard extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 Positioned.fill(
                     child: Material(
                         color: Colors.transparent,

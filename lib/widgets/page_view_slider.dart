@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../utils/colorProvider.dart';
-import '../widgets/heroCard.dart';
+import '../utils/color_provider.dart';
+import '../widgets/hero_card.dart';
 
 class PageViewSlider extends StatefulWidget {
   const PageViewSlider({super.key});
@@ -57,17 +57,15 @@ class _PageViewSliderState extends State<PageViewSlider> {
   Widget pageViewAnimation(int position) {
     Matrix4 matrix = Matrix4.identity();
     double currentScale;
-
+    currentScale = scaleFactor;
     if (position == currentPageValue.floor()) {
       currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
-    } else if (position == currentPageValue.floor() + 1) {
-      currentScale =
-          scaleFactor + (currentPageValue - position + 1) * (1 - scaleFactor);
-    } else if (position == currentPageValue.floor() - 1) {
+    } if (position == currentPageValue.floor() + 1) {
+      currentScale = scaleFactor + (currentPageValue - position + 1) * (1 - scaleFactor);
+    }  if (position == currentPageValue.floor() - 1) {
       currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
-    } else {
-      currentScale = scaleFactor;
     }
+
     matrix = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
     return Transform(
       transformHitTests: true,
