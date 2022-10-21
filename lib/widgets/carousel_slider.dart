@@ -1,0 +1,55 @@
+
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+import '../constants.dart';
+import '../utils/color_provider.dart';
+import 'hero_card.dart';
+
+
+class CarouselCustom extends StatefulWidget {
+  const CarouselCustom({super.key});
+
+  @override
+  State<CarouselCustom> createState() => CarouselCustomState();
+}
+
+class CarouselCustomState extends State<CarouselCustom> {
+  late int activePage;
+
+  @override
+  void initState() {
+    super.initState();
+    activePage = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ColorProvider state = Provider.of<ColorProvider>(context);
+    return   CarouselSlider.builder(
+            options: CarouselOptions(
+              viewportFraction: 0.85,
+              height: double.infinity,
+              initialPage: 0,
+              scrollPhysics:  const BouncingScrollPhysics(),
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
+              enableInfiniteScroll: false,
+              enlargeCenterPage: true,
+              scrollDirection: Axis.horizontal,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  activePage = index;
+                  state.changeColor();
+                });
+              },
+            ),
+            itemCount: heroes.length,
+            itemBuilder: (BuildContext context, int pagePosition,
+                int realIndex) {
+              return HeroCard(pagePosition: pagePosition,);
+            },
+
+          );
+
+  }
+}
