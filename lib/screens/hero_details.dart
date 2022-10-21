@@ -33,12 +33,12 @@ class HeroDetails extends StatelessWidget {
           height: double.infinity,
           width: double.infinity,
           imageUrl: heroImageNetwork.values.elementAt(pagePosition),
-          placeholder: (context, url) => Image.asset(
-            heroes.values.elementAt(pagePosition),
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-          ),
+          placeholder: (context, url) => Shimmer.fromColors(
+              baseColor: backgroundColor,
+              highlightColor: Colors.white10,
+              child: Container(
+                color: backgroundColor,
+              )),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
         Container(

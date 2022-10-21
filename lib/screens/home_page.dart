@@ -39,26 +39,26 @@ class HomePageState extends State<HomePage> {
                             width: MediaQuery.of(context).size.width * 0.5,
                           ),
                        ),
-                       Container(
-                         width: MediaQuery.of(context).size.width * 0.7,
-                          margin:  EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.05),
-                          child: const FittedBox(
-                              alignment: Alignment.topCenter,
-                              child:  Text(
-                                "Choose your hero",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                       Padding(
+                         padding: const EdgeInsets.all(20),
+                         child: Text(
+                                  "Choose your hero",
+                                  style: TextStyle(fontSize: 30,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
 
-                              )),
-                        ),
+                                ),
+                       ),
                       //const Expanded(child: SizedBox()),
                      Expanded(
                          child: //CarouselCustom()    - кастомная реализация через CarouselSlider
                                    PageViewSlider() // - реализация с помощью PageView
                       ),
-                       SizedBox(height: MediaQuery.of(context).size.width * 0.05,)
+                       Padding(
+                         padding: const EdgeInsets.symmetric(vertical: 10),
+                         child: SizedBox(),
+                       )
                     ],
                   ),
             );
