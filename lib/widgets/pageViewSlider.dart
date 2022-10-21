@@ -41,7 +41,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
     ColorProvider state = Provider.of<ColorProvider>(context);
     return PageView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: map.length,
+        itemCount: heroes.length,
         controller: pageController,
         onPageChanged: (page) {
           setState(() {

@@ -43,7 +43,7 @@ class CarouselCustomState extends State<CarouselCustom> {
                 });
               },
             ),
-            itemCount: map.length,
+            itemCount: heroes.length,
             itemBuilder: (BuildContext context, int pagePosition,
                 int realIndex) {
               return HeroCard(pagePosition: pagePosition,);
