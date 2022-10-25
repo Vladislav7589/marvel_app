@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:palette_generator/palette_generator.dart';
+
 Map<String, String> heroes = {
   "Deadpool": "assets/deadpool.jpg",
   "Spider-man": "assets/spider-man.jpg",
@@ -22,5 +24,17 @@ Map<String, String> heroImageNetwork = {
 };
 const double scaleFactor = 0.8;
 const Color backgroundColor = Color(0xff2a262b);
-
+const Color triangleDefaultColor = Color(0xff2a262b);
 Color triangleColor = Colors.blue;
+
+const String scheme = "http://";
+const String domain = "gateway.marvel.com";
+const String pathGettingHeroes = "/v1/public/characters";
+
+const String hash = "27bd3f64b1bcb316e2ca4040142600de";
+const String apikey = "cb61977455abaddbf11ec15f021e8f1b";
+const int ts = 1;
+const int amountHeroes = 5;
+
+const baseUrl = scheme + domain + pathGettingHeroes;
+PaletteGenerator? paletteGenerator;
