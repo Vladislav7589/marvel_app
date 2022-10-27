@@ -1,5 +1,6 @@
 
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:marvel_app/providers/color_provider.dart';
 import '../constants.dart';
@@ -11,6 +12,7 @@ class DioProvider  {
   late List<HeroMarvel> heroes;
 
   Future<List<int>?> getIDHeroes() async {
+    loadingState = LoadingState.loading;
     List<int>? idHeroes = [];
     try {
       Response response = await dio.get(baseUrl,
@@ -27,19 +29,24 @@ class DioProvider  {
         idHeroes.add(id["id"]);
       }
       //log('Успешно получены $amountHeroes');
+      loadingState = LoadingState.successfully;
       return idHeroes;
     } on DioError catch (e) {
+      loadingState = LoadingState.error;
+
       e.response != null
-          ? log('Ошибка! Код: ${e.response?.statusCode}')
-          : log('Ошибка отправки запроса: \n ${e.message}');
+          ? Future.error('Ошибка! Код: ${e.response?.statusCode}')
+          :  Future.error('Ошибка отправки запроса: \n ${e.message}');
 
     }
+    return null;
   }
 
   Future<HeroMarvel> getHeroInfo(int id) async {
     HeroMarvel hero;
 
     try {
+      loadingState = LoadingState.loading;
       Response response = await dio.get("$baseUrl/$id",
           queryParameters: {
             'apikey': apikey,
@@ -51,7 +58,7 @@ class DioProvider  {
       hero.imageUrl != null ? hero.color = await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}"): hero.color = backgroundColor ;
 
       return hero;
-
+      loadingState = LoadingState.successfully;
     } on DioError catch (e) {
 
       if (e.response != null) {

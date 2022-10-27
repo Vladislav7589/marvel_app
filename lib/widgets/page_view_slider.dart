@@ -43,7 +43,6 @@ class _PageViewSliderState extends State<PageViewSlider> {
   @override
   Widget build(BuildContext context) {
     ColorProvider colorState = Provider.of<ColorProvider>(context);
-
     return FutureProvider<List<HeroMarvel>?>(
         create: (context) => DioProvider().getAllHeroesInfo(widget.idHeroes, colorState),
         initialData: null,

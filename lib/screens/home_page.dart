@@ -29,6 +29,7 @@ class HomePageState extends State<HomePage> {
       ],
       child: Builder(builder: (context) {
         var heroes = Provider.of<List<int>?>(context);
+
         return Scaffold(
           body: Container(
             width: MediaQuery.of(context).size.width,
@@ -36,44 +37,58 @@ class HomePageState extends State<HomePage> {
             child: SafeArea(child: Consumer<ColorProvider>(
               builder: (context, colorState, child) {
                 return CustomPaint(
-                  painter: DrawTriangle(color: colorState.color),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          marvelLogo,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          "Choose your hero",
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                    painter: DrawTriangle(color: colorState.color),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            marvelLogo,
+                            width: MediaQuery.of(context).size.width * 0.5,
                           ),
                         ),
-                      ),
-                      //const Expanded(child: SizedBox()),
-                      Expanded(
-                          child: heroes != null
-                              ? PageViewSlider(
-                                  idHeroes: heroes,
+                        const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text(
+                            "Choose your hero",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        //const Expanded(child: SizedBox()),
+                        loadingState != LoadingState.error
+                            ? Expanded(
+                                child: heroes != null
+                                    ? PageViewSlider(
+                                        idHeroes: heroes,
+                                      )
+                                    : const Center(
+                                        child:
+                                            CircularProgressIndicator()) // - реализация с помощью PageView
                                 )
-                              : const Center(
-                                  child:
-                                      CircularProgressIndicator()) // - реализация с помощью PageView
-                          ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: SizedBox(),
-                      )
-                    ],
-                  ),
-                );
+                            : AlertDialog(
+                                title: const Text("Ошибка загрузки!"),
+                                content: const Text(
+                                    "Перезапустите приложение или попробуйте снова"),
+                                actions: [
+                                  ElevatedButton(
+                                      child: const Text("Попробовать снова"),
+                                      onPressed: () {
+                                        setState(() {
+                                          loadingState = LoadingState.loading;
+                                        });
+                                      }),
+                                ],
+                              ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: SizedBox(),
+                        )
+                      ],
+                    ));
               },
             )),
           ),

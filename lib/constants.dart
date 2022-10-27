@@ -42,3 +42,9 @@ const int amountHeroes = 8;
 
 const baseUrl = scheme + domain + pathGettingHeroes;
 
+enum LoadingState {
+  loading,
+  successfully,
+  error
+}
+LoadingState loadingState = LoadingState.loading;
