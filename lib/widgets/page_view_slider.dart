@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 
+
+import 'package:flutter/material.dart';
+import 'package:marvel_app/widgets/shimmer.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import '../constants.dart';
 import '../models/hero_marvel.dart';
 import '../providers/color_provider.dart';
@@ -19,14 +20,12 @@ class PageViewSlider extends StatefulWidget {
 
 class _PageViewSliderState extends State<PageViewSlider> {
   PageController pageController = PageController(viewportFraction: 0.80);
-  int activePage = 0;
-
   // значение текущей страницы
   double currentPageValue = 0.0;
-
   @override
   void initState() {
     super.initState();
+
     //слушатель изменения страницы
     pageController.addListener(() {
       setState(() {
@@ -44,57 +43,81 @@ class _PageViewSliderState extends State<PageViewSlider> {
   @override
   Widget build(BuildContext context) {
     ColorProvider colorState = Provider.of<ColorProvider>(context);
-    return PageView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: widget.idHeroes.length,
-        controller: pageController,
-        onPageChanged: (page) {
-          setState(() {
-            activePage = page;
-            colorState.updateColor();
-          });
-        },
-        itemBuilder: (context, pagePosition) =>
-            pageViewAnimation(pagePosition));
+
+    return FutureProvider<List<HeroMarvel>?>(
+        create: (context) => DioProvider().getAllHeroesInfo(widget.idHeroes, colorState),
+        initialData: null,
+        child: Consumer<List<HeroMarvel>?>(builder: (context, heroes, _) {
+          return heroes != null
+              ? PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: heroes.length,
+                  controller: pageController,
+                  onPageChanged: (page) {
+                    setState(() {
+                      colorState.changeColor((heroes[page].color ?? colorState.color));
+                    });
+                  },
+                  itemBuilder: (context, pagePosition) {
+                    return pageViewAnimation(pagePosition, heroes[pagePosition]);
+                  })
+              : pageViewShimmer();
+        }));
   }
 
   // маштабирование страниц
-  Widget pageViewAnimation(int position) {
-    //ColorProvider colorState = Provider.of<ColorProvider>(context);
-
+  Widget pageViewAnimation(int position, HeroMarvel hero) {
     Matrix4 matrix = Matrix4.identity();
     double currentScale;
     currentScale = scaleFactor;
-    if (position == currentPageValue.floor()) {
-      currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
-    }
-    if (position == currentPageValue.floor() + 1) {
-      currentScale =
-          scaleFactor + (currentPageValue - position + 1) * (1 - scaleFactor);
-    }
-    if (position == currentPageValue.floor() - 1) {
-      currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
-    }
+    if (position == currentPageValue.floor()) currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
+    if (position == currentPageValue.floor() + 1) currentScale = scaleFactor + (currentPageValue - position + 1) * (1 - scaleFactor);
+    if (position == currentPageValue.floor() - 1) currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
+
     matrix = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
     return Transform(
-        //transformHitTests: true,
         alignment: Alignment.center,
         transform: matrix,
-        child: FutureProvider<HeroMarvel?>(
+        child: /*FutureProvider<HeroMarvel?>(
             create: (context) => DioProvider().getHeroInfo(widget.idHeroes[position]),
             initialData: null,
             child: Consumer<HeroMarvel?>(builder: (context, hero, _) {
-              /*if( currentPageValue % 10 == 0) {
-                colorState.changeColor(hero?.color != null? hero!.color : colorState.color);
-              }*/
+              if(activePage == position) {
+                colorState.color = (hero?.color != null? hero!.color : colorState.color)!;
+              }
+             // colorState.updateColor();
               return hero != null
-                  ? HeroCard(pagePosition: position, hero: hero)
-                  : Shimmer.fromColors(
+                  ?*/
+            HeroCard(pagePosition: position, hero: hero)
+        /*: Shimmer.fromColors(
                       baseColor: Colors.transparent,
                       highlightColor: Colors.white10,
                       child: Container(
                         color: backgroundColor,
                       ));
-            })));
+            })
+        )*/
+        );
+  }
+  Widget pageViewShimmer(){
+    Matrix4 matrix2 = Matrix4.identity();
+    return PageView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: 2,
+        controller: pageController,
+        itemBuilder: (context, pagePosition) {
+          double currentScale;
+          currentScale = scaleFactor;
+          if (pagePosition == currentPageValue.floor()) currentScale = 1 - (currentPageValue - pagePosition) * (1 - scaleFactor);
+          if (pagePosition == currentPageValue.floor() + 1) currentScale = scaleFactor + (currentPageValue - pagePosition + 1) * (1 - scaleFactor);
+
+          matrix2 = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
+          return Transform(
+              alignment: Alignment.center,
+              transform: matrix2,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ShimmerWidget()));
+        });
   }
 }

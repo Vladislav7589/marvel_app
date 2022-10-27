@@ -1,19 +1,16 @@
 
 import 'dart:developer';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-
-
+import 'package:marvel_app/providers/color_provider.dart';
 import '../constants.dart';
 import '../models/hero_marvel.dart';
 
 
-
-class DioProvider extends ChangeNotifier {
+class DioProvider  {
   final Dio dio = Dio();
+  late List<HeroMarvel> heroes;
 
-
-  Future<List<int>?> getHeroes() async {
+  Future<List<int>?> getIDHeroes() async {
     List<int>? idHeroes = [];
     try {
       Response response = await dio.get(baseUrl,
@@ -22,20 +19,59 @@ class DioProvider extends ChangeNotifier {
             'hash': hash,
             'ts': ts.toString(),
             "limit": amountHeroes.toString(),
+            "offset": offset,
           });
-      // print('Body: ${response.data}');
+
       var result = response.data["data"]["results"];
       for (var id in result) {
         idHeroes.add(id["id"]);
       }
-      //log('Успешно получены Id героев');
-      //log('${result.length}');
+      //log('Успешно получены $amountHeroes');
       return idHeroes;
     } on DioError catch (e) {
       e.response != null
           ? log('Ошибка! Код: ${e.response?.statusCode}')
           : log('Ошибка отправки запроса: \n ${e.message}');
+
     }
+  }
+
+  Future<HeroMarvel> getHeroInfo(int id) async {
+    HeroMarvel hero;
+
+    try {
+      Response response = await dio.get("$baseUrl/$id",
+          queryParameters: {
+            'apikey': apikey,
+            'hash': hash,
+            'ts': ts.toString(),
+          });
+      var result = response.data["data"]["results"][0];
+      hero = HeroMarvel.fromJson(result);
+      hero.imageUrl != null ? hero.color = await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}"): hero.color = backgroundColor ;
+
+      return hero;
+
+    } on DioError catch (e) {
+
+      if (e.response != null) {
+        return Future.error('Ошибка! Код: ${e.response?.statusCode}');
+      } else {
+        return Future.error('Ошибка отправки запроса: \n ${e.message}');
+      }
+    }
+  }
+
+  Future <List<HeroMarvel>> getAllHeroesInfo(List<int> listHeroes, ColorProvider colorState) async {
+    List<HeroMarvel> heroes = [];
+      for (var id in listHeroes) {
+        heroes.add(await getHeroInfo(id));
+        //log('Успешно получена информация $id героя');
+      }
+      colorState.color = heroes[0].color!;
+      colorState.update();
+      return heroes;
+
   }
 
 /*  Future<List<HeroMarvel>?> getHeroesInfo(List<int> heroes) async {
@@ -49,7 +85,7 @@ class DioProvider extends ChangeNotifier {
               'ts': ts.toString(),
             });
         var hero = response.data["data"]["results"][0];
-        heroesInfo = List<HeroMarvel>.from(hero.map((model)=> HeroMarvel.fromJson(model)));
+
       }
        print('Body: $heroesInfo');
 
@@ -61,31 +97,4 @@ class DioProvider extends ChangeNotifier {
       else return Future.error('Ошибка отправки запроса: \n ${e.message}');
     }
   }*/
-
-  Future<HeroMarvel?> getHeroInfo(int id) async {
-    try {
-      Response response = await dio.get("$baseUrl/$id",
-          queryParameters: {
-            'apikey': apikey,
-            'hash': hash,
-            'ts': ts.toString(),
-          });
-      //print('Body: ${response.data}');
-      var hero = response.data["data"]["results"][0];
-
-      HeroMarvel heroColor;
-      heroColor = HeroMarvel.fromJson(hero);
-      heroColor.color = await HeroMarvel.updatePaletteGenerator(heroColor.imageUrl?? " ");
-      print(heroColor.color);
-      //log('Успешно получены id $id');
-      return heroColor;
-    } on DioError catch (e) {
-      log("${e.response?.realUri}");
-      if (e.response != null)
-        return Future.error('Ошибка! Код: ${e.response?.statusCode}');
-      else
-        return Future.error('Ошибка отправки запроса: \n ${e.message}');
-    }
-  }
-
 }
