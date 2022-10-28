@@ -43,7 +43,7 @@ class CarouselCustomState extends State<CarouselCustom> {
             itemCount: heroes.length,
             itemBuilder: (BuildContext context, int pagePosition,
                 int realIndex) {
-              return SizedBox();//HeroCard(pagePosition: pagePosition,hero: ,);
+              return const SizedBox();
             },
 
           );

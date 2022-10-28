@@ -101,7 +101,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
   Widget pageViewShimmer(){
     Matrix4 matrix2 = Matrix4.identity();
     return PageView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: 2,
         controller: pageController,
         itemBuilder: (context, pagePosition) {
@@ -116,7 +116,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
               transform: matrix2,
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: ShimmerWidget()));
+                  child: const ShimmerWidget()));
         });
   }
 }
