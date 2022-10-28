@@ -39,7 +39,7 @@ class HeroDetails extends StatelessWidget {
               child: Container(
                 color: backgroundColor,
               )),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
         Container(
           margin: const EdgeInsets.only(left: 30, bottom: 30),

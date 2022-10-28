@@ -39,8 +39,8 @@ class HomePageState extends State<HomePage> {
                             width: MediaQuery.of(context).size.width * 0.5,
                           ),
                        ),
-                       Padding(
-                         padding: const EdgeInsets.all(20),
+                       const Padding(
+                         padding: EdgeInsets.all(20),
                          child: Text(
                                   "Choose your hero",
                                   style: TextStyle(fontSize: 30,
@@ -51,12 +51,12 @@ class HomePageState extends State<HomePage> {
                                 ),
                        ),
                       //const Expanded(child: SizedBox()),
-                     Expanded(
+                     const Expanded(
                          child: //CarouselCustom()    - кастомная реализация через CarouselSlider
                                    PageViewSlider() // - реализация с помощью PageView
                       ),
-                       Padding(
-                         padding: const EdgeInsets.symmetric(vertical: 10),
+                       const Padding(
+                         padding: EdgeInsets.symmetric(vertical: 10),
                          child: SizedBox(),
                        )
                     ],
