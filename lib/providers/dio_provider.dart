@@ -1,9 +1,10 @@
 
 import 'package:dio/dio.dart';
+import 'package:env_flutter/env_flutter.dart';
 import 'package:marvel_app/providers/color_provider.dart';
 import '../constants.dart';
 import '../models/hero_marvel.dart';
-
+import '../utils/md5.dart';
 
 class DioProvider  {
   final Dio dio = Dio();
@@ -12,6 +13,9 @@ class DioProvider  {
   Future<List<int>?> getIDHeroes() async {
     loadingState = LoadingState.loading;
     List<int>? idHeroes = [];
+    var ts = DateTime.now();
+    var hash = hashGenerator(ts);
+    var apikey = dotenv.env['API_KEY'];
     try {
       Response response = await dio.get(baseUrl,
           queryParameters: {
@@ -42,7 +46,9 @@ class DioProvider  {
 
   Future<HeroMarvel> getHeroInfo(int id) async {
     HeroMarvel hero;
-
+    var ts = DateTime.now();
+    var hash = hashGenerator(ts);
+    var apikey = dotenv.env['API_KEY'];
     try {
       loadingState = LoadingState.loading;
       Response response = await dio.get("$baseUrl/$id",
@@ -71,7 +77,7 @@ class DioProvider  {
     List<HeroMarvel> heroes = [];
     for (var id in listHeroes) {
       heroes.add(await getHeroInfo(id));
-      //log('Успешно получена информация $id героя');
+
     }
     colorState.color = heroes[0].color!;
     colorState.update();

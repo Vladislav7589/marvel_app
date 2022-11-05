@@ -34,10 +34,8 @@ Color triangleColor = Colors.blue;
 const String scheme = "http://";
 const String domain = "gateway.marvel.com";
 const String pathGettingHeroes = "/v1/public/characters";
-const String hash = "27bd3f64b1bcb316e2ca4040142600de";
-const String apikey = "cb61977455abaddbf11ec15f021e8f1b";
+
 const int offset = 200;
-const int ts = 1;
 const int amountHeroes = 8;
 
 const baseUrl = scheme + domain + pathGettingHeroes;

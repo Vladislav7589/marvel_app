@@ -10,8 +10,6 @@ import '../styles/styles.dart';
 
 class HeroCard extends StatelessWidget {
   final int pagePosition;
-
-  //final int idHero;
   final HeroMarvel? hero;
 
   const HeroCard({Key? key, required this.pagePosition, required this.hero})

@@ -77,26 +77,7 @@ class _PageViewSliderState extends State<PageViewSlider> {
     return Transform(
         alignment: Alignment.center,
         transform: matrix,
-        child: /*FutureProvider<HeroMarvel?>(
-            create: (context) => DioProvider().getHeroInfo(widget.idHeroes[position]),
-            initialData: null,
-            child: Consumer<HeroMarvel?>(builder: (context, hero, _) {
-              if(activePage == position) {
-                colorState.color = (hero?.color != null? hero!.color : colorState.color)!;
-              }
-             // colorState.updateColor();
-              return hero != null
-                  ?*/
-            HeroCard(pagePosition: position, hero: hero)
-        /*: Shimmer.fromColors(
-                      baseColor: Colors.transparent,
-                      highlightColor: Colors.white10,
-                      child: Container(
-                        color: backgroundColor,
-                      ));
-            })
-        )*/
-        );
+        child: HeroCard(pagePosition: position, hero: hero));
   }
   Widget pageViewShimmer(){
     Matrix4 matrix2 = Matrix4.identity();

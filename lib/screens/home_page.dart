@@ -58,7 +58,6 @@ class HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        //const Expanded(child: SizedBox()),
                         loadingState != LoadingState.error
                             ? Expanded(
                                 child: heroes != null
@@ -67,7 +66,7 @@ class HomePageState extends State<HomePage> {
                                       )
                                     : const Center(
                                         child:
-                                            CircularProgressIndicator()) // - реализация с помощью PageView
+                                            CircularProgressIndicator())
                                 )
                             : AlertDialog(
                                 title: const Text("Ошибка загрузки!"),

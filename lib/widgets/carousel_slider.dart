@@ -22,7 +22,6 @@ class CarouselCustomState extends State<CarouselCustom> {
 
   @override
   Widget build(BuildContext context) {
-    //ColorProvider colorState = Provider.of<ColorProvider>(context);
     return   CarouselSlider.builder(
             options: CarouselOptions(
               viewportFraction: 0.85,
