@@ -1,26 +1,28 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marvel_app/screens/home_page.dart';
 import 'package:marvel_app/widgets/shimmer.dart';
-import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../database/database.dart';
 import '../models/hero_marvel.dart';
 import '../providers/color_provider.dart';
 import '../providers/dio_provider.dart';
+import '../providers/providers.dart';
 import '../widgets/hero_card.dart';
 
 
-class PageViewSlider extends StatefulWidget {
+class PageViewSlider extends ConsumerStatefulWidget {
   final List<int>? idHeroes;
 
   const PageViewSlider({super.key, required this.idHeroes});
 
   @override
-  State<PageViewSlider> createState() => _PageViewSliderState();
+  ConsumerState<PageViewSlider> createState() => _PageViewSliderState();
 }
 
-class _PageViewSliderState extends State<PageViewSlider> {
+class _PageViewSliderState extends ConsumerState<PageViewSlider> {
   PageController pageController = PageController(viewportFraction: 0.80);
   // значение текущей страницы
   double currentPageValue = 0.0;
@@ -43,59 +45,54 @@ class _PageViewSliderState extends State<PageViewSlider> {
 
   @override
   Widget build(BuildContext context) {
-    ColorProvider colorState = Provider.of<ColorProvider>(context);
-    var db = Provider.of<MyDatabase>(context);
+    final fetchAllHeroesInfo = FutureProvider<List<HeroMarvel>?>((ref) async {
+      return ref.watch(dio).getAllHeroesInfo(
+          widget.idHeroes,
+          ref.watch(colorProvider),
+          ref.watch(database));
+    });
     if(widget.idHeroes != null) {
-
-      print(widget.idHeroes);
-      return FutureProvider<List<HeroMarvel>?>(
-        create: (context) => DioProvider().getAllHeroesInfo(widget.idHeroes!, colorState, db),
-        initialData: null,
-        child: Consumer<List<HeroMarvel>?>(builder: (context, heroes, _) {
-          return heroes != null
-              ? PageView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: heroes.length,
-              controller: pageController,
-              onPageChanged: (page) {
-                setState(() {
-                  colorState.changeColor((heroes[page].color ?? colorState.color));
+      return  ref.watch(fetchAllHeroesInfo).when(
+          data: (data){
+            return PageView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: data!.length,
+                controller: pageController,
+                onPageChanged: (page) {
+                  setState(() {
+                    //ref.read(colorProvider).changeColor(heroes[page].color);
+                  });
+                },
+                itemBuilder: (context, pagePosition) {
+                  return pageViewAnimation( pagePosition, hero: data[pagePosition]);
                 });
-              },
-              itemBuilder: (context, pagePosition) {
-                return pageViewAnimation(pagePosition, hero: heroes[pagePosition]);
-              })
-              : pageViewShimmer();
-        }));
+          },
+          error: (error, stack) {
+          return Text(
+          "Перезапустите приложение или попробуйте снова");
+          },
+          loading:() => Container(child: Center(child: pageViewShimmer())));
    } else {
-    return  FutureBuilder(
-      future: db.getAllHeroes(),
-      builder: (context, snapshot) {
-        List<MarvelHeroData>? heroes = snapshot.data;
-        if (heroes == null) {
-          return Container(
-              child: Center(
-                child: CircularProgressIndicator(color: Color(0xDF290505),),
-              ));
-        } else if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
-        } else {
-          colorState.color = heroes[0].color;
-          //colorState.update();
-        return PageView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: heroes.length,
-            controller: pageController,
-            onPageChanged: (page) {
-              setState(() {
-                colorState.changeColor((heroes[page].color));
-              });
+        return ref.watch(DBData).when(
+            data: (data){
+              return PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: data.length,
+                  controller: pageController,
+                  onPageChanged: (page) {
+                    setState(() {
+                      //ref.read(colorProvider).changeColor(heroes[page].color);
+                    });
+                  },
+                  itemBuilder: (context, pagePosition) {
+                    return pageViewAnimation( pagePosition, heroDB: data[pagePosition]);
+                  });
             },
-            itemBuilder: (context, pagePosition) {
-              return pageViewAnimation( pagePosition, heroDB: heroes[pagePosition]);
-            });}
-      }
-    );
+            error: (error, stack) {
+              return Text(
+                  "Перезапустите приложение или попробуйте снова");
+            },
+            loading:() => Container(child: Center(child: pageViewShimmer())));
     }
   }
 

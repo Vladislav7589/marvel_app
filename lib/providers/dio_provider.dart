@@ -17,7 +17,7 @@ class DioProvider  {
     }
     final all = await database.select(database.marvelHero).get();
     for(var hero in all) {
-      print('Database: ${hero.id}');
+      print('${hero.id}');
     }
     //print(database.);
   }
@@ -87,14 +87,14 @@ class DioProvider  {
   }
 
 
-  Future <List<HeroMarvel>> getAllHeroesInfo(List<int> listHeroes, ColorProvider colorState, MyDatabase db) async {
+  Future <List<HeroMarvel>> getAllHeroesInfo(List<int>? listHeroes, ColorProvider colorState, MyDatabase db) async {
     List<HeroMarvel> heroes = [];
-    for (var id in listHeroes) {
+    for (var id in listHeroes!) {
       heroes.add(await getHeroInfo(id));
 
     }
-    colorState.color = heroes[0].color!;
-    colorState.update();
+    /*colorState.color = heroes[0].color!;
+    colorState.update();*/
     insertAllHeroesInfoToDataBase(heroes, db);
     return heroes;
   }

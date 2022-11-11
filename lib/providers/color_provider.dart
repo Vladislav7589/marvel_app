@@ -8,5 +8,5 @@ class ColorProvider extends ChangeNotifier {
     color = newColor!;
     notifyListeners();
   }
-  void update() =>  notifyListeners();
+  //void update() =>  notifyListeners();
 }
