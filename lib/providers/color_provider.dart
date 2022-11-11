@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 class ColorProvider extends ChangeNotifier {
-  late Color color = Colors.blue;
+  late int color = Colors.blue.value;
 
-  void changeColor(Color? newColor) {
+  void changeColor(int? newColor) {
     color = newColor!;
     notifyListeners();
   }

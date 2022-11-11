@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants.dart';
+import '../database/database.dart';
 import '../providers/dio_provider.dart';
 import '../providers/color_provider.dart';
 import '../utils/draw_triangle.dart';
@@ -26,16 +27,25 @@ class HomePageState extends State<HomePage> {
           create: (context) => DioProvider().getIDHeroes(),
           initialData: null,
         ),
+        Provider<MyDatabase>(
+          create: (context) => MyDatabase(),
+          dispose: (context, db) => db.close(),
+        ),
       ],
       child: Builder(builder: (context) {
-        var heroes = Provider.of<List<int>?>(context);
+        var heroes = Provider.of<List<int>>(context);
+        var db = Provider.of<MyDatabase>(context);
 
         return Scaffold(
           body: Container(
             width: MediaQuery.of(context).size.width,
             color: backgroundColor,
-            child: SafeArea(child: Consumer<ColorProvider>(
+            child: SafeArea(child:
+            Consumer<ColorProvider>(
               builder: (context, colorState, child) {
+                db.getAllHeroes().then((value) {
+                  colorState.color = value[0].color;
+                });
                 return CustomPaint(
                     painter: DrawTriangle(color: colorState.color),
                     child: Column(
@@ -58,30 +68,32 @@ class HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        loadingState != LoadingState.error
-                            ? Expanded(
-                                child: heroes != null
-                                    ? PageViewSlider(
-                                        idHeroes: heroes,
-                                      )
-                                    : const Center(
-                                        child:
-                                            CircularProgressIndicator())
-                                )
+                        /*loadingState != LoadingState.error
+                            ?*/ Expanded(
+                            child: heroes != null
+                                ? const PageViewSlider(
+                              idHeroes: null,
+                            )
+                                : const Center(
+                                child:
+                                PageViewSlider(
+                                  idHeroes: null,
+                                ))
+                        )/*
                             : AlertDialog(
-                                title: const Text("Ошибка загрузки!"),
-                                content: const Text(
-                                    "Перезапустите приложение или попробуйте снова"),
-                                actions: [
-                                  ElevatedButton(
-                                      child: const Text("Попробовать снова"),
-                                      onPressed: () {
-                                        setState(() {
-                                          loadingState = LoadingState.loading;
-                                        });
-                                      }),
-                                ],
-                              ),
+                          title: const Text("Ошибка загрузки!"),
+                          content: const Text(
+                              "Перезапустите приложение или попробуйте снова"),
+                          actions: [
+                            ElevatedButton(
+                                child: const Text("Попробовать снова"),
+                                onPressed: () {
+                                  setState(() {
+                                    loadingState = LoadingState.loading;
+                                  });
+                                }),
+                          ],
+                        ),*/,
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: SizedBox(),

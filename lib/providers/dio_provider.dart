@@ -3,11 +3,24 @@ import 'package:dio/dio.dart';
 import 'package:env_flutter/env_flutter.dart';
 import 'package:marvel_app/providers/color_provider.dart';
 import '../constants.dart';
+import '../database/database.dart';
 import '../models/hero_marvel.dart';
 import '../utils/md5.dart';
 
 class DioProvider  {
   final Dio dio = Dio();
+
+  Future insertAllHeroesInfoToDataBase(List<HeroMarvel> heroes, MyDatabase database) async {
+    database.deleteEverything();
+    for (var hero in heroes) {
+      database.insertHero(hero);
+    }
+    final all = await database.select(database.marvelHero).get();
+    for(var hero in all) {
+      print('Database: ${hero.id}');
+    }
+    //print(database.);
+  }
   late List<HeroMarvel> heroes;
 
   Future<List<int>?> getIDHeroes() async {
@@ -59,7 +72,7 @@ class DioProvider  {
           });
       var result = response.data["data"]["results"][0];
       hero = HeroMarvel.fromJson(result);
-      hero.imageUrl != null ? hero.color = await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}"): hero.color = backgroundColor ;
+      hero.imageUrl != null ? hero.color = await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}"): hero.color = backgroundColor.value ;
 
       return hero;
 
@@ -73,7 +86,8 @@ class DioProvider  {
     }
   }
 
-  Future <List<HeroMarvel>> getAllHeroesInfo(List<int> listHeroes, ColorProvider colorState) async {
+
+  Future <List<HeroMarvel>> getAllHeroesInfo(List<int> listHeroes, ColorProvider colorState, MyDatabase db) async {
     List<HeroMarvel> heroes = [];
     for (var id in listHeroes) {
       heroes.add(await getHeroInfo(id));
@@ -81,6 +95,7 @@ class DioProvider  {
     }
     colorState.color = heroes[0].color!;
     colorState.update();
+    insertAllHeroesInfoToDataBase(heroes, db);
     return heroes;
   }
 }
