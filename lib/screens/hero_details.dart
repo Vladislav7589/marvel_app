@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marvel_app/providers/database_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constants.dart';
@@ -8,14 +9,15 @@ import 'package:marvel_app/models/hero_marvel.dart';
 import 'package:marvel_app/styles/styles.dart';
 
 import '../database/database.dart';
+import '../providers/dio_provider.dart';
+import '../widgets/error_widget.dart';
+import '../widgets/shimmer.dart';
 
 class HeroDetails extends StatelessWidget {
-  final int pagePosition;
-  final HeroMarvel? hero;
-  final MarvelHeroData? heroDB;
-
+  final int? heroId;
+  final int? heroDb;
   const HeroDetails(
-      {Key? key, required this.pagePosition, required this.hero, this.heroDB})
+      {Key? key, required this.heroId, this.heroDb})
       : super(key: key);
 
   @override
@@ -24,17 +26,38 @@ class HeroDetails extends StatelessWidget {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(elevation: 0.0, backgroundColor: Colors.transparent),
-      body: Hero(
-        transitionOnUserGestures: true,
-        tag: hero?.id != null ? "${hero?.id}" : "${heroDB?.id}",
-        child: Material(
-            type: MaterialType.transparency, // likely needed
-            child: page()),
+      body: Consumer(
+        builder: (_, WidgetRef ref, __) {
+          return heroId !=null?  ref.watch(fetchHeroInfo(heroId!)).when(
+              data: (data) => Hero(
+                transitionOnUserGestures: true,
+                tag: "${data.id}" ,
+                child: Material(
+                    type: MaterialType.transparency, // likely needed
+                    child: page(hero: data)),
+              ),
+              error: (error, stack) =>  NetworkErrorWidget(text: "load data internet"),
+              loading:() => Container(
+                  color: backgroundColor,
+                  child:  const ShimmerWidget())
+          ) : ref.watch(dataHero(heroDb!)).when(
+              data: (data) => Hero(
+                transitionOnUserGestures: true,
+                tag: "${data.id}" ,
+                child: Material(
+                    type: MaterialType.transparency, // likely needed
+                    child: page(heroDB: data)),
+              ),
+              error: (error, stack) =>  NetworkErrorWidget(text: "database"),
+              loading:() => Container(
+                  color: backgroundColor,
+                  child: const ShimmerWidget())
+          );
+        },
       ),
     );
   }
-
-  Widget page() {
+  Widget page({HeroMarvel? hero, MarvelHeroData? heroDB}) {
     return Container(
       color: backgroundColor,
       child: Stack(

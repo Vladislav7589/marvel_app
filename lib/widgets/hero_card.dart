@@ -1,29 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/database/database.dart';
-import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../screens/hero_details.dart';
 import 'package:marvel_app/models/hero_marvel.dart';
 import 'package:marvel_app/widgets/shimmer.dart';
-import '../providers/color_provider.dart';
 import '../styles/styles.dart';
 import 'dart:convert';
 
 class HeroCard extends StatelessWidget {
-  final int pagePosition;
+
   final HeroMarvel? hero;
   final MarvelHeroData? heroDB;
 
-  const HeroCard({Key? key, required this.pagePosition, required this.hero, this.heroDB})
+  const HeroCard({Key? key,required this.hero, this.heroDB})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ColorProvider colorState = Provider.of<ColorProvider>(context);
 
-    return heroDB != null
-        ? Hero(
+    return Hero(
             transitionOnUserGestures: true,
             tag:  hero?.id !=null ? "${hero?.id}" :  "${heroDB?.id}",
             child: Card(
@@ -81,23 +77,22 @@ class HeroCard extends StatelessWidget {
                         child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              highlightColor: Color(colorState.color).withOpacity(.6),
-                              splashColor: Color(colorState.color).withOpacity(.3),
+                              highlightColor: Color(Colors.blue.value).withOpacity(.6),
+                              splashColor: Color(Colors.blue.value).withOpacity(.3),
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => HeroDetails(
-                                            pagePosition: pagePosition,
-                                            hero: hero,
-                                            heroDB: heroDB)));
+                                            heroId: hero?.id,
+                                            heroDb: heroDB?.id,
+                                        )));
                               },
                             ))),
                   ],
                 ),
               ),
             ),
-          )
-        : const ShimmerWidget();
+          );
   }
 }

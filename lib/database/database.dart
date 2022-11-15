@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:marvel_app/database/table.dart';
 import 'package:marvel_app/models/hero_marvel.dart';
@@ -8,7 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
-import 'package:http/http.dart' as http;
+import '../utils/image_to_string.dart';
+
 part 'database.g.dart';
 
 LazyDatabase _openConnection() {
@@ -30,11 +28,15 @@ class MyDatabase extends _$MyDatabase {
     return await select(marvelHero).get();
   }
 
+  Future<MarvelHeroData> getHero(int id) async {
+    return await (select(marvelHero)..where((tbl) => tbl.id.equals(id))).getSingle();
+  }
+
   Future<int> insertHero(HeroMarvel hero) async {
     return await into(marvelHero).insert(
         MarvelHeroCompanion.insert(
         description: "${hero.description}",
-        id: hero.id!,
+        id: Value(hero.id!),
         name: hero.name!,
         image:  await imageToBase64("${hero.imageUrl}"),
         color: hero.color!)
@@ -49,10 +51,5 @@ class MyDatabase extends _$MyDatabase {
   }
 }
 
-Future<String> imageToBase64(String imageUrl) async {
-  Uri url = Uri.parse(imageUrl);
-  http.Response response = await http.get(url);
-  final bytes = response.bodyBytes;
 
-  return base64Encode(bytes);
-}
+

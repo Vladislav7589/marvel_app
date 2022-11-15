@@ -115,13 +115,12 @@ class MarvelHeroCompanion extends UpdateCompanion<MarvelHeroData> {
     this.color = const Value.absent(),
   });
   MarvelHeroCompanion.insert({
-    required int id,
+    this.id = const Value.absent(),
     required String name,
     required String description,
     required String image,
     required int color,
-  })  : id = Value(id),
-        name = Value(name),
+  })  : name = Value(name),
         description = Value(description),
         image = Value(image),
         color = Value(color);
@@ -200,7 +199,7 @@ class $MarvelHeroTable extends MarvelHero
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int, requiredDuringInsert: false);
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -235,8 +234,6 @@ class $MarvelHeroTable extends MarvelHero
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -268,7 +265,7 @@ class $MarvelHeroTable extends MarvelHero
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   MarvelHeroData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';

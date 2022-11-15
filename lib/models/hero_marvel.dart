@@ -1,7 +1,29 @@
-
 import 'package:flutter/material.dart';
 import 'package:marvel_app/constants.dart';
 import 'package:palette_generator/palette_generator.dart';
+
+class Heroes {
+  List<HeroMarvel>? heroMarvel;
+
+  Heroes({this.heroMarvel});
+
+  Heroes.fromJson(Map<String, dynamic> json) {
+    if (json['results'] != null) {
+      heroMarvel = <HeroMarvel>[];
+      json['results'].forEach((v) {
+        heroMarvel!.add(HeroMarvel.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (heroMarvel != null) {
+      data['results'] = heroMarvel!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
 class HeroMarvel {
   int? id;

@@ -1,22 +1,22 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:marvel_app/screens/home_page.dart';
+
 import 'package:marvel_app/widgets/shimmer.dart';
 import '../constants.dart';
 import '../database/database.dart';
 import '../models/hero_marvel.dart';
 import '../providers/color_provider.dart';
-import '../providers/dio_provider.dart';
-import '../providers/providers.dart';
+
+import '../providers/database_provider.dart';
 import '../widgets/hero_card.dart';
+import 'error_widget.dart';
 
 
 class PageViewSlider extends ConsumerStatefulWidget {
-  final List<int>? idHeroes;
+  final List<HeroMarvel>? heroes;
 
-  const PageViewSlider({super.key, required this.idHeroes});
+  const PageViewSlider({super.key, required this.heroes});
 
   @override
   ConsumerState<PageViewSlider> createState() => _PageViewSliderState();
@@ -31,6 +31,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     super.initState();
     //слушатель изменения страницы
     pageController.addListener(() {
+
       setState(() {
         currentPageValue = pageController.page!;
       });
@@ -43,37 +44,24 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final fetchAllHeroesInfo = FutureProvider<List<HeroMarvel>?>((ref) async {
-      return ref.watch(dio).getAllHeroesInfo(
-          widget.idHeroes,
-          ref.watch(colorProvider),
-          ref.watch(database));
-    });
-    if(widget.idHeroes != null) {
-      return  ref.watch(fetchAllHeroesInfo).when(
-          data: (data){
-            return PageView.builder(
+    if(widget.heroes != null) {
+      return   PageView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: data!.length,
+                itemCount: widget.heroes!.length,
                 controller: pageController,
                 onPageChanged: (page) {
                   setState(() {
-                    //ref.read(colorProvider).changeColor(heroes[page].color);
+                    ref.read(colorProvider.notifier).change(widget.heroes![page].color!);
                   });
                 },
                 itemBuilder: (context, pagePosition) {
-                  return pageViewAnimation( pagePosition, hero: data[pagePosition]);
+                  return pageViewAnimation( pagePosition, hero: widget.heroes![pagePosition]);
                 });
-          },
-          error: (error, stack) {
-          return Text(
-          "Перезапустите приложение или попробуйте снова");
-          },
-          loading:() => Container(child: Center(child: pageViewShimmer())));
    } else {
-        return ref.watch(DBData).when(
+        return ref.read(allDataBase).when(
             data: (data){
               return PageView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -81,7 +69,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
                   controller: pageController,
                   onPageChanged: (page) {
                     setState(() {
-                      //ref.read(colorProvider).changeColor(heroes[page].color);
+                      ref.read(colorProvider.notifier).change(data[page].color);
                     });
                   },
                   itemBuilder: (context, pagePosition) {
@@ -89,10 +77,9 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
                   });
             },
             error: (error, stack) {
-              return Text(
-                  "Перезапустите приложение или попробуйте снова");
+              return NetworkErrorWidget(text: "load data");
             },
-            loading:() => Container(child: Center(child: pageViewShimmer())));
+            loading:() => Center(child: pageViewShimmer()));
     }
   }
 
@@ -109,7 +96,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     return Transform(
         alignment: Alignment.center,
         transform: matrix,
-        child: HeroCard(pagePosition: position, hero: hero, heroDB: heroDB));
+        child: HeroCard( hero: hero, heroDB: heroDB));
   }
 
 

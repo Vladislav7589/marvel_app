@@ -6,4 +6,7 @@ class MarvelHero extends Table {
   TextColumn get description => text().named('description')();
   TextColumn get image => text().named('image')();
   IntColumn get color => integer().named('color')();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
