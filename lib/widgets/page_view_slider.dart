@@ -63,6 +63,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
    } else {
         return ref.read(allDataBase).when(
             data: (data){
+              //ref.watch(colorProvider.notifier).change(data[0].color);
               return PageView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: data.length,
