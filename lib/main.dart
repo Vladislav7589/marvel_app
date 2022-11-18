@@ -1,7 +1,9 @@
+import 'package:env_flutter/env_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/screens/home_page.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:   HomePage(),
+      home:   const HomePage(),
     );
   }
 }

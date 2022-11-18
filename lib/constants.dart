@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+
 Map<String, String> heroes = {
   "Deadpool": "assets/deadpool.jpg",
   "Spider-man": "assets/spider-man.jpg",
@@ -20,7 +21,28 @@ Map<String, String> heroImageNetwork = {
   "Thanos": "https://drive.google.com/uc?export=view&id=1VG0fVnZDvhsfKpJ4WtfGoFnPggVYntaX",
   "Tor":"https://drive.google.com/uc?export=view&id=1r21bZlocTKKXMz-g_5JoYD4lb3lwJr-j"
 };
+
+const String imageNotAvailable = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
+const String noImage = "assets/no_image.png";
+const String marvelLogo = "assets/marvel.png";
+
 const double scaleFactor = 0.8;
 const Color backgroundColor = Color(0xff2a262b);
 
 Color triangleColor = Colors.blue;
+
+const String scheme = "http://";
+const String domain = "gateway.marvel.com";
+const String pathGettingHeroes = "/v1/public/characters";
+
+const int offset = 200;
+const int amountHeroes = 8;
+
+const baseUrl = scheme + domain + pathGettingHeroes;
+
+enum LoadingState {
+  loading,
+  successfully,
+  error
+}
+LoadingState loadingState = LoadingState.loading;

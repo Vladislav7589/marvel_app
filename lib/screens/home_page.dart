@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../utils/color_provider.dart';
+import '../providers/dio_provider.dart';
+import '../providers/color_provider.dart';
 import '../utils/draw_triangle.dart';
 import '../widgets/page_view_slider.dart';
-
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,59 +15,84 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        color: backgroundColor,
-        child: SafeArea(
-          child: ChangeNotifierProvider(
-            create: (context) => ColorProvider(),
-              child: Consumer<ColorProvider>(
-              builder: (context,state,child){
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ColorProvider(),
+        ),
+        FutureProvider<List<int>?>(
+          create: (context) => DioProvider().getIDHeroes(),
+          initialData: null,
+        ),
+      ],
+      child: Builder(builder: (context) {
+        var heroes = Provider.of<List<int>?>(context);
+
+        return Scaffold(
+          body: Container(
+            width: MediaQuery.of(context).size.width,
+            color: backgroundColor,
+            child: SafeArea(child: Consumer<ColorProvider>(
+              builder: (context, colorState, child) {
                 return CustomPaint(
-                  painter: DrawTriangle(color: state.color),
-                  child: Column(
-                    children: [
-                       Padding(
-                         padding: const EdgeInsets.all(8.0),
-                         child: Image.asset(
-                            "assets/marvel.png",
+                    painter: DrawTriangle(color: colorState.color),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            marvelLogo,
                             width: MediaQuery.of(context).size.width * 0.5,
                           ),
-                       ),
-                       Padding(
-                         padding: const EdgeInsets.all(20),
-                         child: Text(
-                                  "Choose your hero",
-                                  style: TextStyle(fontSize: 30,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-
-                                ),
-                       ),
-                      //const Expanded(child: SizedBox()),
-                     Expanded(
-                         child: //CarouselCustom()    - кастомная реализация через CarouselSlider
-                                   PageViewSlider() // - реализация с помощью PageView
-                      ),
-                       Padding(
-                         padding: const EdgeInsets.symmetric(vertical: 10),
-                         child: SizedBox(),
-                       )
-                    ],
-                  ),
-            );
-          },
-        )
-    ),
-        ),
-      ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text(
+                            "Choose your hero",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        loadingState != LoadingState.error
+                            ? Expanded(
+                                child: heroes != null
+                                    ? PageViewSlider(
+                                        idHeroes: heroes,
+                                      )
+                                    : const Center(
+                                        child:
+                                            CircularProgressIndicator())
+                                )
+                            : AlertDialog(
+                                title: const Text("Ошибка загрузки!"),
+                                content: const Text(
+                                    "Перезапустите приложение или попробуйте снова"),
+                                actions: [
+                                  ElevatedButton(
+                                      child: const Text("Попробовать снова"),
+                                      onPressed: () {
+                                        setState(() {
+                                          loadingState = LoadingState.loading;
+                                        });
+                                      }),
+                                ],
+                              ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: SizedBox(),
+                        )
+                      ],
+                    ));
+              },
+            )),
+          ),
+        );
+      }),
     );
   }
-
 }
-
