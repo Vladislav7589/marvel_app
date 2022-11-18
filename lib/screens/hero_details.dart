@@ -36,7 +36,7 @@ class HeroDetails extends StatelessWidget {
                     type: MaterialType.transparency, // likely needed
                     child: page(hero: data)),
               ),
-              error: (error, stack) =>  NetworkErrorWidget(text: "load data internet"),
+              error: (error, stack) =>  const NetworkErrorWidget(text: "load data internet"),
               loading:() => Container(
                   color: backgroundColor,
                   child:  const ShimmerWidget())
@@ -48,7 +48,7 @@ class HeroDetails extends StatelessWidget {
                     type: MaterialType.transparency, // likely needed
                     child: page(heroDB: data)),
               ),
-              error: (error, stack) =>  NetworkErrorWidget(text: "database"),
+              error: (error, stack) =>  const NetworkErrorWidget(text: "database"),
               loading:() => Container(
                   color: backgroundColor,
                   child: const ShimmerWidget())

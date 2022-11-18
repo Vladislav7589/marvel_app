@@ -78,7 +78,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
                   });
             },
             error: (error, stack) {
-              return NetworkErrorWidget(text: "load data");
+              return const NetworkErrorWidget(text: "load data");
             },
             loading:() => Center(child: pageViewShimmer()));
     }

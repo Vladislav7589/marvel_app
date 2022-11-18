@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+
 import '../constants.dart';
 import '../providers/color_provider.dart';
 import '../providers/dio_provider.dart';
@@ -20,10 +20,8 @@ class _HomePageState extends State<HomePage> {
   late bool result = true;
   @override
   void initState() {
-    checkInternetConnection();
     super.initState();
   }
-  Future<void> checkInternetConnection() async => result = await InternetConnectionChecker().hasConnection;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (_, WidgetRef ref, __) {
                               return  ref.watch(fetchAllHeroesInfo(ref)).when(
                                   data: (data) => PageViewSlider(heroes: data),
-                                  error: (error, stack) => NetworkErrorWidget(text: "load data"),
+                                  error: (error, stack) => const NetworkErrorWidget(text: "load data"),
                                   loading:() => const Center(child: CircularProgressIndicator(color: Colors.red,))
                               );
                             },
