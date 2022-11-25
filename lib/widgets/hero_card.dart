@@ -37,8 +37,7 @@ class HeroCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     "${hero?.imageUrl}" != imageNotAvailable
-                        ? Builder(builder: (context) {
-                            return hero?.imageUrl != null ? CachedNetworkImage(
+                        ? hero?.imageUrl != null ? CachedNetworkImage(
                               fit: BoxFit.cover,
                               height: double.infinity,
                               width: double.infinity,
@@ -54,8 +53,7 @@ class HeroCard extends StatelessWidget {
                               width: double.infinity,
                               gaplessPlayback: true,
                               excludeFromSemantics: true,
-                            );
-                          })
+                            )
                         : Image.asset(
                             noImage,
                             fit: BoxFit.contain,

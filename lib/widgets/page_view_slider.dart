@@ -47,41 +47,46 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.heroes != null) {
-      return   PageView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: widget.heroes!.length,
-                controller: pageController,
-                onPageChanged: (page) {
-                  setState(() {
-                    ref.read(colorProvider.notifier).change(widget.heroes![page].color!);
-                  });
-                },
-                itemBuilder: (context, pagePosition) {
-                  return pageViewAnimation( pagePosition, hero: widget.heroes![pagePosition]);
-                });
-   } else {
-        return ref.read(allDataBase).when(
-            data: (data){
-              //ref.watch(colorProvider.notifier).change(data[0].color);
-              return PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: data.length,
-                  controller: pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      ref.read(colorProvider.notifier).change(data[page].color);
-                    });
-                  },
-                  itemBuilder: (context, pagePosition) {
-                    return pageViewAnimation( pagePosition, heroDB: data[pagePosition]);
-                  });
-            },
-            error: (error, stack) {
-              return const NetworkErrorWidget(text: "load data");
-            },
-            loading:() => Center(child: pageViewShimmer()));
+    if (widget.heroes != null) {
+      return PageView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: widget.heroes!.length,
+          controller: pageController,
+          onPageChanged: (page) {
+            setState(() {
+              ref.read(colorProvider.notifier).change(
+                  widget.heroes![page].color!);
+            });
+          },
+          itemBuilder: (context, pagePosition) {
+            return pageViewAnimation(
+                pagePosition, hero: widget.heroes![pagePosition]);
+          });
     }
+
+    return ref.read(allDataBase).when(
+
+        data: (data) {
+          return PageView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: data.length,
+              controller: pageController,
+              onPageChanged: (page) {
+                setState(() {
+                  ref.read(colorProvider.notifier).change(data[page].color);
+                });
+              },
+              itemBuilder: (context, pagePosition) {
+                return pageViewAnimation(
+                    pagePosition, heroDB: data[pagePosition]);
+              });
+        },
+        error: (error, stack) {
+          return const NetworkErrorWidget(text: "load data");
+        },
+        loading: () => Center(child: pageViewShimmer()));
+
+
   }
 
   // маштабирование страниц
