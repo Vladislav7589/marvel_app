@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
+
+
 
 class CarouselCustom extends StatefulWidget {
   final List<int> idHeroes;

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:marvel_app/providers/database_provider.dart';
+import 'package:marvel_app/src/providers/database_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../constants.dart';
-import 'package:marvel_app/models/hero_marvel.dart';
-import 'package:marvel_app/styles/styles.dart';
+import 'package:marvel_app/src/models/heroes.dart';
+import 'package:marvel_app/src/styles/styles.dart';
 
+import '../../constants.dart';
 import '../database/database.dart';
 import '../providers/dio_provider.dart';
 import '../widgets/error_widget.dart';

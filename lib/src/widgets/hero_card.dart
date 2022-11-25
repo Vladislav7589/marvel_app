@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:marvel_app/database/database.dart';
-import '../constants.dart';
+import 'package:marvel_app/src/database/database.dart';
+
+import '../../constants.dart';
 import '../screens/hero_details.dart';
-import 'package:marvel_app/models/hero_marvel.dart';
-import 'package:marvel_app/widgets/shimmer.dart';
+import 'package:marvel_app/src/models/heroes.dart';
+import 'package:marvel_app/src/widgets/shimmer.dart';
 import '../styles/styles.dart';
 import 'dart:convert';
 

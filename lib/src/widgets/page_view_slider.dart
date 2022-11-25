@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:marvel_app/widgets/shimmer.dart';
-import '../constants.dart';
+import 'package:marvel_app/src/widgets/shimmer.dart';
+import '../../constants.dart';
 import '../database/database.dart';
-import '../models/hero_marvel.dart';
+import '../models/heroes.dart';
 import '../providers/color_provider.dart';
 
 import '../providers/database_provider.dart';
@@ -82,7 +82,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
               });
         },
         error: (error, stack) {
-          return const NetworkErrorWidget(text: "load data");
+          return const NetworkErrorWidget(text: "Error load DataBase");
         },
         loading: () => Center(child: pageViewShimmer()));
 

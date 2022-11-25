@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:env_flutter/env_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:marvel_app/providers/color_provider.dart';
-import '../constants.dart';
-import '../models/hero_marvel.dart';
+import 'package:marvel_app/src/providers/color_provider.dart';
+
+import '../../constants.dart';
+import '../models/heroes.dart';
 import '../utils/md5_encode.dart';
 import 'database_provider.dart';
 

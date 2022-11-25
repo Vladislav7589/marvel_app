@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
-import '../models/hero_marvel.dart';
+import '../models/heroes.dart';
 import 'color_provider.dart';
 
 final database = Provider<MyDatabase>((ref) {
