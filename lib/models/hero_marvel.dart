@@ -1,21 +1,40 @@
-
 import 'package:flutter/material.dart';
 import 'package:marvel_app/constants.dart';
 import 'package:palette_generator/palette_generator.dart';
 
+class Heroes {
+  List<HeroMarvel>? heroMarvel;
+
+  Heroes({this.heroMarvel});
+
+  Heroes.fromJson(Map<String, dynamic> json) {
+    if (json['results'] != null) {
+      heroMarvel = <HeroMarvel>[];
+      json['results'].forEach((v) {
+        heroMarvel!.add(HeroMarvel.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (heroMarvel != null) {
+      data['results'] = heroMarvel!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
 class HeroMarvel {
   int? id;
   String? name;
   String? description;
-  String? modified;
   String? imageUrl;
-  Color? color;
+  int? color;
   HeroMarvel(
       {this.id,
         this.name,
         this.description,
-        this.modified,
         this.imageUrl,
         this.color,
       });
@@ -24,7 +43,6 @@ class HeroMarvel {
     id = json['id'];
     name = json['name'];
     description = json['description'];
-    modified = json['modified'];
     imageUrl = json['thumbnail']['path'] + "." + json['thumbnail']['extension'];
   }
 
@@ -33,16 +51,16 @@ class HeroMarvel {
     data['id'] = id;
     data['name'] = name;
     data['description'] = description;
-    data['modified'] = modified;
     data['imageUrl'] = imageUrl;
     data['color'] = color;
     return data;
   }
 
-  static Future<Color> updatePaletteGenerator (String url) async
+  static Future<int> updatePaletteGenerator (String url) async
   {
     PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(Image.network(url).image,);
-    return paletteGenerator.dominantColor!= null ? paletteGenerator.dominantColor!.color : triangleColor;
+    return paletteGenerator.dominantColor!= null ? paletteGenerator.dominantColor!.color.value : triangleColor.value;
   }
+
 }
 

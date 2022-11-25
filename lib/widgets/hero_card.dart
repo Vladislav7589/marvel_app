@@ -1,28 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:marvel_app/database/database.dart';
 import '../constants.dart';
 import '../screens/hero_details.dart';
 import 'package:marvel_app/models/hero_marvel.dart';
 import 'package:marvel_app/widgets/shimmer.dart';
-import '../providers/color_provider.dart';
 import '../styles/styles.dart';
+import 'dart:convert';
 
 class HeroCard extends StatelessWidget {
-  final int pagePosition;
-  final HeroMarvel? hero;
 
-  const HeroCard({Key? key, required this.pagePosition, required this.hero})
+  final HeroMarvel? hero;
+  final MarvelHeroData? heroDB;
+
+  const HeroCard({Key? key,required this.hero, this.heroDB})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ColorProvider colorState = Provider.of<ColorProvider>(context);
 
-    return hero != null
-        ? Hero(
+    return Hero(
             transitionOnUserGestures: true,
-            tag: "${hero?.id}",
+            tag:  hero?.id !=null ? "${hero?.id}" :  "${heroDB?.id}",
             child: Card(
               color: Colors.transparent,
               margin: const EdgeInsets.only(bottom: 20),
@@ -38,8 +37,7 @@ class HeroCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     "${hero?.imageUrl}" != imageNotAvailable
-                        ? Builder(builder: (context) {
-                            return CachedNetworkImage(
+                        ? hero?.imageUrl != null ? CachedNetworkImage(
                               fit: BoxFit.cover,
                               height: double.infinity,
                               width: double.infinity,
@@ -48,8 +46,14 @@ class HeroCard extends StatelessWidget {
                                   const ShimmerWidget(),
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
-                            );
-                          })
+                            ): 
+                            Image.memory(base64Decode("${heroDB?.image}"),
+                              fit: BoxFit.cover,
+                              height: double.infinity,
+                              width: double.infinity,
+                              gaplessPlayback: true,
+                              excludeFromSemantics: true,
+                            )
                         : Image.asset(
                             noImage,
                             fit: BoxFit.contain,
@@ -62,7 +66,7 @@ class HeroCard extends StatelessWidget {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.6,
                         child: Text(
-                          "${hero?.name}",
+                            hero?.name !=null ? "${hero?.name}" :  "${heroDB?.name}",
                           style: textStyle(30, FontWeight.bold)
                         ),
                       ),
@@ -71,22 +75,22 @@ class HeroCard extends StatelessWidget {
                         child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              highlightColor: colorState.color.withOpacity(.6),
-                              splashColor: colorState.color.withOpacity(.3),
+                              highlightColor: Color(Colors.blue.value).withOpacity(.6),
+                              splashColor: Color(Colors.blue.value).withOpacity(.3),
                               onTap: () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => HeroDetails(
-                                            pagePosition: pagePosition,
-                                            hero: hero)));
+                                            heroId: hero?.id,
+                                            heroDb: heroDB?.id,
+                                        )));
                               },
                             ))),
                   ],
                 ),
               ),
             ),
-          )
-        : const ShimmerWidget();
+          );
   }
 }

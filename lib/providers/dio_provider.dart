@@ -1,48 +1,33 @@
-
 import 'package:dio/dio.dart';
 import 'package:env_flutter/env_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marvel_app/providers/color_provider.dart';
 import '../constants.dart';
 import '../models/hero_marvel.dart';
-import '../utils/md5.dart';
+import '../utils/md5_encode.dart';
+import 'database_provider.dart';
 
-class DioProvider  {
-  final Dio dio = Dio();
-  late List<HeroMarvel> heroes;
+final dioProvider = Provider<DioClient>(
+  (ref) => DioClient(),
+);
 
-  Future<List<int>?> getIDHeroes() async {
-    loadingState = LoadingState.loading;
-    List<int>? idHeroes = [];
-    var ts = DateTime.now();
-    var hash = hashGenerator(ts);
-    var apikey = dotenv.env['API_KEY'];
-    try {
-      Response response = await dio.get(baseUrl,
-          queryParameters: {
-            'apikey': apikey,
-            'hash': hash,
-            'ts': ts.toString(),
-            "limit": amountHeroes.toString(),
-            "offset": offset,
-          });
-
-      var result = response.data["data"]["results"];
-      for (var id in result) {
-        idHeroes.add(id["id"]);
-      }
-      //log('Успешно получены $amountHeroes');
-      loadingState = LoadingState.successfully;
-      return idHeroes;
-    } on DioError catch (e) {
-      loadingState = LoadingState.error;
-
-      e.response != null
-          ? Future.error('Ошибка! Код: ${e.response?.statusCode}')
-          :  Future.error('Ошибка отправки запроса: \n ${e.message}');
-
-    }
-    return null;
+final fetchAllHeroesInfo = FutureProvider<List<HeroMarvel>?>((ref) async {
+  var data = await ref.watch(dioProvider).getAllHeroesInfo();
+  if(data!=null){
+    ref.watch(colorProvider.notifier).change(data[0].color);
+    ref.watch(insertAllHeroesInfoToDataBase(data));
   }
+
+  return data;
+});
+
+final fetchHeroInfo = FutureProvider.family<HeroMarvel, int>((ref, id) async {
+  return ref.watch(dioProvider).getHeroInfo(id);
+});
+
+
+class DioClient {
+  final Dio dio = Dio();
 
   Future<HeroMarvel> getHeroInfo(int id) async {
     HeroMarvel hero;
@@ -50,21 +35,16 @@ class DioProvider  {
     var hash = hashGenerator(ts);
     var apikey = dotenv.env['API_KEY'];
     try {
-      loadingState = LoadingState.loading;
-      Response response = await dio.get("$baseUrl/$id",
-          queryParameters: {
-            'apikey': apikey,
-            'hash': hash,
-            'ts': ts.toString(),
-          });
+      Response response = await dio.get("$baseUrl/$id", queryParameters: {
+        'apikey': apikey,
+        'hash': hash,
+        'ts': ts.toString(),
+      });
       var result = response.data["data"]["results"][0];
       hero = HeroMarvel.fromJson(result);
-      hero.imageUrl != null ? hero.color = await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}"): hero.color = backgroundColor ;
 
       return hero;
-
     } on DioError catch (e) {
-
       if (e.response != null) {
         return Future.error('Ошибка! Код: ${e.response?.statusCode}');
       } else {
@@ -73,14 +53,33 @@ class DioProvider  {
     }
   }
 
-  Future <List<HeroMarvel>> getAllHeroesInfo(List<int> listHeroes, ColorProvider colorState) async {
+  Future<List<HeroMarvel>?> getAllHeroesInfo() async {
     List<HeroMarvel> heroes = [];
-    for (var id in listHeroes) {
-      heroes.add(await getHeroInfo(id));
+    DateTime ts = DateTime.now();
 
+    try {
+      Response response = await dio.get(baseUrl, queryParameters: {
+        'apikey': dotenv.env['API_KEY'],
+        'hash': hashGenerator(ts),
+        'ts': ts.toString(),
+        "limit": amountHeroes.toString(),
+        "offset": offset,
+      });
+
+      var result = response.data["data"];
+      heroes = Heroes.fromJson(result).heroMarvel!;
+      for (var hero in heroes) {
+        hero.color = hero.imageUrl != null
+            ? hero.color =
+                await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}")
+            : hero.color = backgroundColor.value;
+      }
+      return heroes;
+    } on DioError catch (e) {
+      e.response != null
+          ? Future.error('Ошибка! Код: ${e.response?.statusCode}')
+          : Future.error('Ошибка отправки запроса: \n ${e.message}');
     }
-    colorState.color = heroes[0].color!;
-    colorState.update();
-    return heroes;
+    return null;
   }
 }

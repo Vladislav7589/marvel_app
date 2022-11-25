@@ -1,33 +1,37 @@
 
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:marvel_app/widgets/shimmer.dart';
-import 'package:provider/provider.dart';
 import '../constants.dart';
+import '../database/database.dart';
 import '../models/hero_marvel.dart';
 import '../providers/color_provider.dart';
-import '../providers/dio_provider.dart';
+
+import '../providers/database_provider.dart';
 import '../widgets/hero_card.dart';
+import 'error_widget.dart';
 
-class PageViewSlider extends StatefulWidget {
-  final List<int> idHeroes;
 
-  const PageViewSlider({super.key, required this.idHeroes});
+class PageViewSlider extends ConsumerStatefulWidget {
+  final List<HeroMarvel>? heroes;
+
+  const PageViewSlider({super.key, required this.heroes});
 
   @override
-  State<PageViewSlider> createState() => _PageViewSliderState();
+  ConsumerState<PageViewSlider> createState() => _PageViewSliderState();
 }
 
-class _PageViewSliderState extends State<PageViewSlider> {
+class _PageViewSliderState extends ConsumerState<PageViewSlider> {
   PageController pageController = PageController(viewportFraction: 0.80);
   // значение текущей страницы
   double currentPageValue = 0.0;
   @override
   void initState() {
     super.initState();
-
     //слушатель изменения страницы
     pageController.addListener(() {
+
       setState(() {
         currentPageValue = pageController.page!;
       });
@@ -40,32 +44,53 @@ class _PageViewSliderState extends State<PageViewSlider> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    ColorProvider colorState = Provider.of<ColorProvider>(context);
-    return FutureProvider<List<HeroMarvel>?>(
-        create: (context) => DioProvider().getAllHeroesInfo(widget.idHeroes, colorState),
-        initialData: null,
-        child: Consumer<List<HeroMarvel>?>(builder: (context, heroes, _) {
-          return heroes != null
-              ? PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: heroes.length,
-                  controller: pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      colorState.changeColor((heroes[page].color ?? colorState.color));
-                    });
-                  },
-                  itemBuilder: (context, pagePosition) {
-                    return pageViewAnimation(pagePosition, heroes[pagePosition]);
-                  })
-              : pageViewShimmer();
-        }));
+    if (widget.heroes != null) {
+      return PageView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: widget.heroes!.length,
+          controller: pageController,
+          onPageChanged: (page) {
+            setState(() {
+              ref.read(colorProvider.notifier).change(
+                  widget.heroes![page].color!);
+            });
+          },
+          itemBuilder: (context, pagePosition) {
+            return pageViewAnimation(
+                pagePosition, hero: widget.heroes![pagePosition]);
+          });
+    }
+
+    return ref.read(allDataBase).when(
+
+        data: (data) {
+          return PageView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: data.length,
+              controller: pageController,
+              onPageChanged: (page) {
+                setState(() {
+                  ref.read(colorProvider.notifier).change(data[page].color);
+                });
+              },
+              itemBuilder: (context, pagePosition) {
+                return pageViewAnimation(
+                    pagePosition, heroDB: data[pagePosition]);
+              });
+        },
+        error: (error, stack) {
+          return const NetworkErrorWidget(text: "load data");
+        },
+        loading: () => Center(child: pageViewShimmer()));
+
+
   }
 
   // маштабирование страниц
-  Widget pageViewAnimation(int position, HeroMarvel hero) {
+  Widget pageViewAnimation(int position,{ HeroMarvel? hero, MarvelHeroData? heroDB}) {
     Matrix4 matrix = Matrix4.identity();
     double currentScale;
     currentScale = scaleFactor;
@@ -77,8 +102,10 @@ class _PageViewSliderState extends State<PageViewSlider> {
     return Transform(
         alignment: Alignment.center,
         transform: matrix,
-        child: HeroCard(pagePosition: position, hero: hero));
+        child: HeroCard( hero: hero, heroDB: heroDB));
   }
+
+
   Widget pageViewShimmer(){
     Matrix4 matrix2 = Matrix4.identity();
     return PageView.builder(

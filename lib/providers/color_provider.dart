@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ColorProvider extends ChangeNotifier {
-  late Color color = Colors.blue;
+class ColorProvider extends StateNotifier<int> {
+  ColorProvider() : super(Colors.blue.value);
 
-  void changeColor(Color? newColor) {
-    color = newColor!;
-    notifyListeners();
-  }
-  void update() =>  notifyListeners();
+  void change(int? color) => state = color!;
 }
+
+final colorProvider = StateNotifierProvider<ColorProvider, int>((ref) => ColorProvider());

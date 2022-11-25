@@ -1,98 +1,121 @@
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import 'package:provider/provider.dart';
 import '../constants.dart';
-import '../providers/dio_provider.dart';
 import '../providers/color_provider.dart';
+import '../providers/database_provider.dart';
+import '../providers/dio_provider.dart';
 import '../utils/draw_triangle.dart';
 import '../widgets/page_view_slider.dart';
+import '../widgets/error_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> {
+  late bool result = false;
+
+  @override
+  void initState() {
+    checkInternetConnection();
+    super.initState();
+  }
+
+  Future<void> checkInternetConnection() async =>
+      result = await InternetConnectionChecker().hasConnection;
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => ColorProvider(),
-        ),
-        FutureProvider<List<int>?>(
-          create: (context) => DioProvider().getIDHeroes(),
-          initialData: null,
-        ),
-      ],
-      child: Builder(builder: (context) {
-        var heroes = Provider.of<List<int>?>(context);
-
-        return Scaffold(
-          body: Container(
-            width: MediaQuery.of(context).size.width,
-            color: backgroundColor,
-            child: SafeArea(child: Consumer<ColorProvider>(
-              builder: (context, colorState, child) {
+    return Scaffold(
+      body: Container(
+          width: MediaQuery.of(context).size.width,
+          color: backgroundColor,
+          child: SafeArea(
+              child: Stack(children: [
+            Consumer(
+              builder: (_, WidgetRef ref, __) {
                 return CustomPaint(
-                    painter: DrawTriangle(color: colorState.color),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            marvelLogo,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Text(
-                            "Choose your hero",
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        loadingState != LoadingState.error
-                            ? Expanded(
-                                child: heroes != null
-                                    ? PageViewSlider(
-                                        idHeroes: heroes,
-                                      )
-                                    : const Center(
-                                        child:
-                                            CircularProgressIndicator())
-                                )
-                            : AlertDialog(
-                                title: const Text("Ошибка загрузки!"),
-                                content: const Text(
-                                    "Перезапустите приложение или попробуйте снова"),
-                                actions: [
-                                  ElevatedButton(
-                                      child: const Text("Попробовать снова"),
-                                      onPressed: () {
-                                        setState(() {
-                                          loadingState = LoadingState.loading;
-                                        });
-                                      }),
-                                ],
-                              ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: SizedBox(),
-                        )
-                      ],
-                    ));
+                    painter: DrawTriangle(color: ref.watch(colorProvider)),
+                    child: Container());
               },
-            )),
-          ),
-        );
-      }),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    marvelLogo,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    "Choose your hero",
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child:  Consumer(
+                          builder: (_, WidgetRef ref, __) {
+                            var dB = ref.read(allDataBase);
+                            return ref.watch(fetchAllHeroesInfo).when(
+                                  data: (data) => RefreshIndicator(
+                                    onRefresh: () async {
+                                      checkInternetConnection();
+                                      return ref.refresh(fetchAllHeroesInfo.future);
+                                    },
+                                      child: (result | ( dB.hasValue))? PageViewSlider(heroes: data):ListView(
+
+                                          children: const [
+                                             Text(
+                                                "Отсутсвует интернет соединение",
+                                                style: TextStyle(
+                                                  fontSize: 30,
+                                                  color: Colors.blue,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                               textAlign: TextAlign.center,
+                                              ),
+                                            Text(
+                                              "Проведите внизу чтобы обновить",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  error: (error, stack) =>
+                                      const NetworkErrorWidget(
+                                          text: "load data home"),
+                                  loading: () => const Center(
+                                          child: CircularProgressIndicator(
+                                        color: Colors.red,
+                                      )));
+
+                          },
+                        )
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: SizedBox(),
+                )
+              ],
+            ),
+          ]))),
     );
   }
 }

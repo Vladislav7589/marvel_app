@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Отрисовка разноцветного треуольника
 class DrawTriangle extends CustomPainter {
-  Color color;
+  int color;
 
   DrawTriangle({required this.color});
 
@@ -14,7 +14,7 @@ class DrawTriangle extends CustomPainter {
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
     path.close();
-    canvas.drawPath(path, Paint()..color = color);
+    canvas.drawPath(path, Paint()..color = Color(color));
   }
 
   @override
