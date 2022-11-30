@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     result = await InternetConnectionChecker().hasConnection;
     var snackBar = SnackBar(
       backgroundColor: result?Colors.green: Colors.grey,
-      content: result? Text('Подключено'):Text('Нет интернета!'),
+      content: result? const Text('Connected'):const Text('Not connected!'),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 const Padding(
                   padding: EdgeInsets.all(20),
                   child: Text(
-                    "Choose your hero",
+                    'Choose your hero',
                     style: TextStyle(
                       fontSize: 30,
                       color: Colors.white,
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                                       child: (result | ( dB.hasValue))? PageViewSlider(heroes: data):ListView(
                                           children: const [
                                              Text(
-                                                "Отсутсвует интернет соединение",
+                                               'No internet connection',
                                                 style: TextStyle(
                                                   fontSize: 30,
                                                   color: Colors.blue,
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                                                textAlign: TextAlign.center,
                                               ),
                                             Text(
-                                              "Проведите внизу чтобы обновить",
+                                              'Swipe down to update',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.white,
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                   error: (error, stack) =>
                                       const NetworkErrorWidget(
-                                          text: "Error load data"),
+                                          text: 'Error load data'),
                                   loading: () => const Center(
                                           child: CircularProgressIndicator(
                                         color: Colors.red,

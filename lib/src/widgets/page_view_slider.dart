@@ -82,7 +82,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
               });
         },
         error: (error, stack) {
-          return const NetworkErrorWidget(text: "Error load DataBase");
+          return const NetworkErrorWidget(text: 'Error load DataBase');
         },
         loading: () => Center(child: pageViewShimmer()));
 
@@ -102,9 +102,24 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     return Transform(
         alignment: Alignment.center,
         transform: matrix,
-        child: HeroCard( hero: hero, heroDB: heroDB));
-  }
+        child:   Card(
+            color: Colors.transparent,
+            margin: const EdgeInsets.only(bottom: 20),
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 10,
+            child: HeroCard(
+                    hero: hero,
+                    heroDB: heroDB,
+                    details: false,
+                  ),
 
+          ),
+        );
+  }
 
   Widget pageViewShimmer(){
     Matrix4 matrix2 = Matrix4.identity();

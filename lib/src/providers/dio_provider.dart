@@ -36,20 +36,20 @@ class DioClient {
     var hash = hashGenerator(ts);
     var apikey = dotenv.env['API_KEY'];
     try {
-      Response response = await dio.get("$baseUrl/$id", queryParameters: {
+      Response response = await dio.get('$baseUrl/$id', queryParameters: {
         'apikey': apikey,
         'hash': hash,
         'ts': ts.toString(),
       });
-      var result = response.data["data"]["results"][0];
+      var result = response.data['data']['results'][0];
       hero = HeroMarvel.fromJson(result);
 
       return hero;
     } on DioError catch (e) {
       if (e.response != null) {
-        return Future.error('Ошибка! Код: ${e.response?.statusCode}');
+        return Future.error('Error! Code: ${e.response?.statusCode}');
       } else {
-        return Future.error('Ошибка отправки запроса: \n ${e.message}');
+        return Future.error('Request sending error: \n ${e.message}');
       }
     }
   }
@@ -63,23 +63,23 @@ class DioClient {
         'apikey': dotenv.env['API_KEY'],
         'hash': hashGenerator(ts),
         'ts': ts.toString(),
-        "limit": amountHeroes.toString(),
-        "offset": offset,
+        'limit': amountHeroes.toString(),
+        'offset': offset,
       });
 
-      var result = response.data["data"];
+      var result = response.data['data'];
       heroes = Heroes.fromJson(result).heroMarvel!;
       for (var hero in heroes) {
         hero.color = hero.imageUrl != null
             ? hero.color =
-                await HeroMarvel.updatePaletteGenerator("${hero.imageUrl}")
+                await HeroMarvel.updatePaletteGenerator('${hero.imageUrl}')
             : hero.color = backgroundColor.value;
       }
       return heroes;
     } on DioError catch (e) {
       e.response != null
-          ? Future.error('Ошибка! Код: ${e.response?.statusCode}')
-          : Future.error('Ошибка отправки запроса: \n ${e.message}');
+          ? Future.error('Error! Code: ${e.response?.statusCode}')
+          : Future.error('Request sending error: \n ${e.message}');
     }
     return null;
   }

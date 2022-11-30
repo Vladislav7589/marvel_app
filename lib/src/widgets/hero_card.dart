@@ -13,8 +13,9 @@ class HeroCard extends StatelessWidget {
 
   final HeroMarvel? hero;
   final MarvelHeroData? heroDB;
+  final bool details;
 
-  const HeroCard({Key? key,required this.hero, this.heroDB})
+  const HeroCard({Key? key, this.hero,  this.heroDB, required this.details})
       : super(key: key);
 
   @override
@@ -22,76 +23,79 @@ class HeroCard extends StatelessWidget {
 
     return Hero(
             transitionOnUserGestures: true,
-            tag:  hero?.id !=null ? "${hero?.id}" :  "${heroDB?.id}",
-            child: Card(
-              color: Colors.transparent,
-              margin: const EdgeInsets.only(bottom: 20),
-              semanticContainer: true,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              elevation: 10,
+            tag:  hero?.id !=null ? '${hero?.id}' :  '${heroDB?.id}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
               child: Material(
-                type: MaterialType.transparency, // likely needed
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    "${hero?.imageUrl}" != imageNotAvailable
-                        ? hero?.imageUrl != null ? CachedNetworkImage(
-                              fit: BoxFit.cover,
+                  type: MaterialType.transparency, // likely needed
+                  child: Stack(
+                    children: [
+                      '${hero?.imageUrl}' != imageNotAvailable
+                          ? hero?.imageUrl != null ? CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                height: double.infinity,
+                                width: double.infinity,
+                                imageUrl: "${hero?.imageUrl}",
+                                placeholder: (context, url) =>
+                                    const ShimmerWidget(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ):
+                              Image.memory(base64Decode('${heroDB?.image}'),
+                                fit: BoxFit.cover,
+                                height: double.infinity,
+                                width: double.infinity,
+                                gaplessPlayback: true,
+                                excludeFromSemantics: true,
+                              )
+                          : Image.asset(
+                              noImage,
+                              fit: BoxFit.contain,
                               height: double.infinity,
                               width: double.infinity,
-                              imageUrl: "${hero?.imageUrl}",
-                              placeholder: (context, url) =>
-                                  const ShimmerWidget(),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                            ): 
-                            Image.memory(base64Decode("${heroDB?.image}"),
-                              fit: BoxFit.cover,
-                              height: double.infinity,
-                              width: double.infinity,
-                              gaplessPlayback: true,
-                              excludeFromSemantics: true,
-                            )
-                        : Image.asset(
-                            noImage,
-                            fit: BoxFit.contain,
-                            height: double.infinity,
-                            width: double.infinity,
+                            ),
+                      Positioned(
+                        left: 30,
+                        bottom: 30,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text( hero?.name !=null ? '${hero?.name}' :  '${heroDB?.name}',
+                                  style: textStyle(30, FontWeight.bold)),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              if(details) Text(
+                                  hero?.description !=null ? hero?.description != '' ? '${hero?.description}' : 'Missing' :  '${heroDB?.description}',
+                                  style: textStyle(25, null)),
+                            ],
                           ),
-                    Positioned(
-                      left: 30,
-                      bottom: 30,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: Text(
-                            hero?.name !=null ? "${hero?.name}" :  "${heroDB?.name}",
-                          style: textStyle(30, FontWeight.bold)
                         ),
                       ),
-                    ),
-                    Positioned.fill(
-                        child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              highlightColor: Color(Colors.blue.value).withOpacity(.6),
-                              splashColor: Color(Colors.blue.value).withOpacity(.3),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HeroDetails(
-                                            heroId: hero?.id,
-                                            heroDb: heroDB?.id,
-                                        )));
-                              },
-                            ))),
-                  ],
+                      if(!details)Positioned.fill(
+                          child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                highlightColor: Color(hero !=null ? hero!.color! :  heroDB!.color).withOpacity(.6),
+                                splashColor: Color(hero !=null ? hero!.color! :  heroDB!.color).withOpacity(.3),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HeroDetails(
+                                              heroId: hero?.id,
+                                              heroDb: heroDB?.id,
+                                          )));
+                                },
+                              ))),
+                    ],
+                  ),
                 ),
-              ),
             ),
+
           );
   }
 }

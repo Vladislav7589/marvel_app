@@ -35,10 +35,10 @@ class MyDatabase extends _$MyDatabase {
   Future<int> insertHero(HeroMarvel hero) async {
     return await into(marvelHero).insert(
         MarvelHeroCompanion.insert(
-        description: "${hero.description}",
+        description: '${hero.description}',
         id: Value(hero.id!),
         name: hero.name!,
-        image:  await imageToBase64("${hero.imageUrl}"),
+        image:  await imageToBase64('${hero.imageUrl}'),
         color: hero.color!)
     );
   }
