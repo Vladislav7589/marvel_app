@@ -11,6 +11,7 @@ import '../widgets/page_view_slider.dart';
 import '../widgets/error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
