@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:marvel_app/database/table.dart';
-import 'package:marvel_app/models/hero_marvel.dart';
+import 'package:marvel_app/src/database/table.dart';
+import 'package:marvel_app/src/models/heroes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:drift/native.dart';
@@ -35,10 +35,10 @@ class MyDatabase extends _$MyDatabase {
   Future<int> insertHero(HeroMarvel hero) async {
     return await into(marvelHero).insert(
         MarvelHeroCompanion.insert(
-        description: "${hero.description}",
+        description: '${hero.description}',
         id: Value(hero.id!),
         name: hero.name!,
-        image:  await imageToBase64("${hero.imageUrl}"),
+        image:  await imageToBase64('${hero.imageUrl}'),
         color: hero.color!)
     );
   }

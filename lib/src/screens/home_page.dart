@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import '../constants.dart';
+
+import '../../constants.dart';
 import '../providers/color_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/dio_provider.dart';
@@ -26,8 +27,14 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  Future<void> checkInternetConnection() async =>
-      result = await InternetConnectionChecker().hasConnection;
+  Future<void> checkInternetConnection() async {
+    result = await InternetConnectionChecker().hasConnection;
+    var snackBar = SnackBar(
+      backgroundColor: result?Colors.green: Colors.grey,
+      content: result? const Text('Connected'):const Text('Not connected!'),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 const Padding(
                   padding: EdgeInsets.all(20),
                   child: Text(
-                    "Choose your hero",
+                    'Choose your hero',
                     style: TextStyle(
                       fontSize: 30,
                       color: Colors.white,
@@ -70,15 +77,14 @@ class _HomePageState extends State<HomePage> {
                             var dB = ref.read(allDataBase);
                             return ref.watch(fetchAllHeroesInfo).when(
                                   data: (data) => RefreshIndicator(
-                                    onRefresh: () async {
+                                    onRefresh: ()  {
                                       checkInternetConnection();
                                       return ref.refresh(fetchAllHeroesInfo.future);
                                     },
                                       child: (result | ( dB.hasValue))? PageViewSlider(heroes: data):ListView(
-
                                           children: const [
                                              Text(
-                                                "Отсутсвует интернет соединение",
+                                               'No internet connection',
                                                 style: TextStyle(
                                                   fontSize: 30,
                                                   color: Colors.blue,
@@ -87,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                                                textAlign: TextAlign.center,
                                               ),
                                             Text(
-                                              "Проведите внизу чтобы обновить",
+                                              'Swipe down to update',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.white,
@@ -100,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                   error: (error, stack) =>
                                       const NetworkErrorWidget(
-                                          text: "load data home"),
+                                          text: 'Error load data'),
                                   loading: () => const Center(
                                           child: CircularProgressIndicator(
                                         color: Colors.red,
