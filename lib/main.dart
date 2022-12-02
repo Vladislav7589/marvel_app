@@ -9,11 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'firebase_options.dart';
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance', // id
-    'High Importance Notifications', // title
-    importance: Importance.high,
-    playSound: true);
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
@@ -34,66 +30,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-
-  );
-  /*const AndroidNotificationChannel channel  = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
-    importance: Importance.max,
-
-  );
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin  =
-  FlutterLocalNotificationsPlugin();
-
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
-
-
- FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-    print("onMessageOpenedApp: $message");
-    navigatorKey.currentState?.push(MaterialPageRoute(
-        builder: (context) => HeroDetails(
-          heroId: int.parse(message.data['heroId']),
-        )));
-
-
-  });
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    RemoteNotification? notification  = message.notification;
-    AndroidNotification? android  = message.notification?.android;
-
-    // If `onMessage` is triggered with a notification, construct our own
-    // local notification to show to users using the created channel.
-    if (notification  != null && android  != null) {
-      flutterLocalNotificationsPlugin.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              channel.id ,
-              channel.name ,
-              channelDescription: channel.description,
-              icon: android.smallIcon,
-              // other properties...
-            ),
-          ));
-    }
-  });*/
   runApp(const ProviderScope(child: MyApp()));
 }
 
