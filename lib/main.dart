@@ -5,31 +5,28 @@ import 'package:marvel_app/src/screens/hero_details.dart';
 import 'package:marvel_app/src/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 import 'firebase_options.dart';
 
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('Hero ID: ${message.data["heroId"]}');
+}
 
-
+Future<void> firebaseMessagingInitialize() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.getInitialMessage();
 }
 
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final navigatorKey = GlobalKey<NavigatorState>();
+final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
   await dotenv.load();
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  firebaseMessagingInitialize();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -47,19 +44,22 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      scaffoldKey.currentState?.showSnackBar(showSnackBar(message));
+    });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-
       navigatorKey.currentState?.push(MaterialPageRoute(
           builder: (context) => HeroDetails(
             heroId: int.parse(message.data['heroId']),
           )));
-  });
+    });
 }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Marvel heroes',
@@ -69,4 +69,29 @@ class _MyAppState extends State<MyApp> {
       home:   const HomePage(),
     );
   }
+
+
+}
+SnackBar showSnackBar(RemoteMessage message){
+  return SnackBar(
+    content:  Text('Show hero: \n${message.notification?.body}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+    duration: const Duration(seconds: 10),
+    backgroundColor: Colors.redAccent,
+    action: SnackBarAction(
+      label:'Check',
+      onPressed: () {
+        navigatorKey.currentState?.push(MaterialPageRoute(
+            builder: (context) => HeroDetails(
+              heroId: int.parse(message.data['heroId']),
+            )));
+      },
+      textColor: Colors.black,
+      disabledTextColor: Colors.grey,
+    ),
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+    behavior: SnackBarBehavior.floating,
+
+    margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+  );
 }

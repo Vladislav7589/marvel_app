@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "194219917624",
+    "project_id": "pushnotificationmarvel",
+    "storage_bucket": "pushnotificationmarvel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194219917624:android:53a2a87c2e54b7c2db41cd",
+        "android_client_info": {
+          "package_name": "com.example.marvel_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194219917624-dkbcgrgpo40v19f4oknukcik750k5f1m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfYP_Ng7Xcxpu0izJ78DYgOJAU044AhOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194219917624-dkbcgrgpo40v19f4oknukcik750k5f1m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,7 +18,7 @@ dependencies:
   crypto: ^3.0.2
   cached_network_image: ^3.2.2
   palette_generator: ^0.3.3+2
-  carousel_slider: ^4.1.1
+
   provider: ^6.0.2
   flutter_riverpod: ^2.1.1
   env_flutter: ^0.1.4
