@@ -14,37 +14,14 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'High Importance Notifications', // title
     importance: Importance.high,
     playSound: true);
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   await Firebase.initializeApp();
-  //print('Hero ID: ${message.data["heroId"]}');
-  const androidInitialization = AndroidInitializationSettings('@mipmap/ic_launcher');
-  const settings = InitializationSettings(android: androidInitialization,);
-  flutterLocalNotificationsPlugin.initialize(settings,);
-  RemoteNotification? notification  = message.notification;
-  AndroidNotification? android  = message.notification?.android;
-
-  if (notification  != null && android  != null) {
-    flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id ,
-            channel.name ,
-            channelDescription: channel.description,
-            icon: android.smallIcon,
-            importance: Importance.high,
-            priority: Priority.high,
-            playSound: true,
-            // other properties...
-          ),
-        ));
-  }
+  print('Hero ID: ${message.data["heroId"]}');
 
 
 }
@@ -57,9 +34,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -127,6 +105,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
 
 @override
   void initState() {
