@@ -1,0 +1,16 @@
+{
+  "mainText": "Choose your hero",
+  "missing": "Missing",
+  "notification":{
+    "button":"Check"
+  },
+  "connection":{
+    "connected":"Connected",
+    "swipeConnection":"Swipe down to update",
+    "notConnected":"No internet connection"
+  },
+  "errors":{
+    "errorLoadData":"Load data error",
+    "errorLoadDatabase":"Load database error"
+  }
+}

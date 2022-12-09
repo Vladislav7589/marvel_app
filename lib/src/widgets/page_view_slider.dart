@@ -1,9 +1,11 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:marvel_app/src/widgets/shimmer.dart';
 import '../../constants.dart';
+import '../../translations/locale_keys.g.dart';
 import '../database/database.dart';
 import '../models/heroes.dart';
 import '../providers/color_provider.dart';
@@ -69,7 +71,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
         data: (data) {
           return PageView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: data.length,
+              itemCount: data!.length,
               controller: pageController,
               onPageChanged: (page) {
                 setState(() {
@@ -82,7 +84,7 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
               });
         },
         error: (error, stack) {
-          return const NetworkErrorWidget(text: 'Error load DataBase');
+          return  NetworkErrorWidget(text: LocaleKeys.errorsErrorLoadDatabase.tr());
         },
         loading: () => Center(child: pageViewShimmer()));
 

@@ -1,0 +1,16 @@
+{
+  "mainText": "Выбери своего героя",
+  "missing": "Отсутствует",
+  "massage":{
+    "button":"Смотреть"
+  },
+  "connection":{
+    "connected":"Подключено",
+    "swipeConnection":"Проведите вниз чтобы обновить",
+    "notConnected":"Отсутствует интернет соединение"
+  },
+  "errors":{
+    "errorLoadData":"Ошибка загрузки данных",
+    "errorLoadDatabase":"Ошибка загрузки локальных данных"
+  }
+}

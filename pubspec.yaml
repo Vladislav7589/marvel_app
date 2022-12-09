@@ -18,8 +18,8 @@ dependencies:
   crypto: ^3.0.2
   cached_network_image: ^3.2.2
   palette_generator: ^0.3.3+2
+  easy_localization: ^3.0.1
 
-  provider: ^6.0.2
   flutter_riverpod: ^2.1.1
   env_flutter: ^0.1.4
 
@@ -30,7 +30,6 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   firebase_core: ^2.3.0
   firebase_messaging: ^14.1.2
-  flutter_local_notifications: ^12.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,3 +45,4 @@ flutter:
   assets:
     - assets/
     - .env
+    - assets/translations/

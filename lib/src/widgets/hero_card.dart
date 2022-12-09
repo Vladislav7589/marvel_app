@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/src/database/database.dart';
+import 'package:marvel_app/translations/locale_keys.g.dart';
 
 import '../../constants.dart';
 import '../screens/hero_details.dart';
@@ -69,7 +71,7 @@ class HeroCard extends StatelessWidget {
                                 height: 8,
                               ),
                               if(details) Text(
-                                  hero?.description !=null ? hero?.description != '' ? '${hero?.description}' : 'Missing' :  '${heroDB?.description}',
+                                  hero?.description !=null ? hero?.description != '' ? '${hero?.description}' : LocaleKeys.missing.tr() :  heroDB?.description != '' ? '${heroDB?.description}' : LocaleKeys.missing.tr(),
                                   style: textStyle(25, null)),
                             ],
                           ),
