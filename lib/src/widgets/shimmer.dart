@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../constants.dart';
-
-
-
 class ShimmerWidget extends StatelessWidget {
   const ShimmerWidget({Key? key}) : super(key: key);
 
@@ -13,9 +9,9 @@ class ShimmerWidget extends StatelessWidget {
     return Shimmer.fromColors(
         baseColor: Colors.transparent,
         period : const Duration(milliseconds: 1000),
-        highlightColor: Colors.white10,
+        highlightColor: Theme.of(context).highlightColor,
         child: Container(
-          color: backgroundColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
         ));
   }
 }

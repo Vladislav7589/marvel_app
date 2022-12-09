@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marvel_app/src/providers/database_provider.dart';
 import 'package:marvel_app/src/widgets/hero_card.dart';
-import '../../constants.dart';
 import '../../translations/locale_keys.g.dart';
 import '../providers/dio_provider.dart';
 import '../widgets/error_widget.dart';
@@ -20,7 +19,7 @@ class HeroDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         extendBodyBehindAppBar: true,
         appBar: AppBar(elevation: 0.0, backgroundColor: Colors.transparent),
         body: heroId != null ? ref.watch(fetchHeroInfo(heroId!)).when(
@@ -29,7 +28,7 @@ class HeroDetails extends ConsumerWidget {
              NetworkErrorWidget(text: LocaleKeys.errorsErrorLoadData.tr()),
             loading: () =>
                 Container(
-                    color: backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: const ShimmerWidget())
         ) : ref.watch(dataHero(heroDb!)).when(
             data: (data) => HeroCard(heroDB: data, details: true),
@@ -37,7 +36,7 @@ class HeroDetails extends ConsumerWidget {
             NetworkErrorWidget(text: LocaleKeys.errorsErrorLoadDatabase.tr()),
             loading: () =>
                 Container(
-                    color: backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: const ShimmerWidget())
         )
 

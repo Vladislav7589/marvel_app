@@ -43,9 +43,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
           width: MediaQuery.of(context).size.width,
-          color: backgroundColor,
+          //color: backgroundColor,
           child: SafeArea(
               child: Stack(children: [
                 Consumer(
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Image.asset(
-                        marvelLogo,
+                        Theme.of(context).brightness ==Brightness.light? marvelLogoDark:marvelLogo,
                         width: MediaQuery.of(context).size.width * 0.5,
                       ),
                     ),
@@ -71,7 +71,6 @@ class _HomePageState extends State<HomePage> {
                         LocaleKeys.mainText.tr(),
                         style: const TextStyle(
                           fontSize: 30,
-                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

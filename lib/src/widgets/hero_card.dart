@@ -57,10 +57,9 @@ class HeroCard extends StatelessWidget {
                               width: double.infinity,
                             ),
                       Positioned(
-                        left: 30,
-                        bottom: 30,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.6,
+
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 30,bottom: 30,right: 30),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +71,11 @@ class HeroCard extends StatelessWidget {
                               ),
                               if(details) Text(
                                   hero?.description !=null ? hero?.description != '' ? '${hero?.description}' : LocaleKeys.missing.tr() :  heroDB?.description != '' ? '${heroDB?.description}' : LocaleKeys.missing.tr(),
-                                  style: textStyle(25, null)),
+                                  style: textStyle(25, null),
+                                  maxLines: 18,
+                                textAlign: TextAlign.justify,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
                         ),

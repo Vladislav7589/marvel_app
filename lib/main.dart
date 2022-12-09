@@ -6,6 +6,7 @@ import 'package:marvel_app/src/screens/hero_details.dart';
 import 'package:marvel_app/src/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:marvel_app/src/theme/themes.dart';
 import 'package:marvel_app/translations/codegen_loader.g.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
 
@@ -77,9 +78,9 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Marvel heroes',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home:   const HomePage(),
     );
   }
