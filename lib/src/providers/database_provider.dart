@@ -10,7 +10,9 @@ final database = Provider<MyDatabase>((ref) {
 
 final allDataBase = FutureProvider<List<MarvelHeroData>>((ref) async {
   var data = await ref.read(database).getAllHeroes();
-  ref.watch(colorProvider.notifier).change(data[0].color);
+  if(data.isNotEmpty){
+    ref.watch(colorProvider.notifier).change(data[0].color);
+  }
   return ref.read(database).getAllHeroes();
 });
 

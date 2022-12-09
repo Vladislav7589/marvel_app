@@ -3,6 +3,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 
 import '../../constants.dart';
+import '../../main.dart';
 import '../providers/color_provider.dart';
 import '../providers/database_provider.dart';
 import '../providers/dio_provider.dart';
@@ -10,6 +11,7 @@ import '../utils/draw_triangle.dart';
 import '../widgets/page_view_slider.dart';
 import '../widgets/error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,8 +35,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: result?Colors.green: Colors.grey,
       content: result? const Text('Connected'):const Text('Not connected!'),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+    scaffoldKey.currentState?.showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {

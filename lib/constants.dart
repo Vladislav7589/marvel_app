@@ -9,7 +9,7 @@ const double scaleFactor = 0.8;
 const Color backgroundColor = Color(0xff2a262b);
 
 Color triangleColor = Colors.blue;
-
+String firebaseToken = '';
 const String scheme = 'http://';
 const String domain = 'gateway.marvel.com';
 const String pathGettingHeroes = '/v1/public/characters';
