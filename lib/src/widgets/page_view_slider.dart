@@ -18,24 +18,24 @@ import 'error_widget.dart';
 class PageViewSlider extends ConsumerStatefulWidget {
   final List<HeroMarvel>? heroes;
 
-  const PageViewSlider({super.key, required this.heroes});
+  const PageViewSlider( {super.key, required this.heroes});
 
   @override
   ConsumerState<PageViewSlider> createState() => _PageViewSliderState();
 }
 
 class _PageViewSliderState extends ConsumerState<PageViewSlider> {
-  PageController pageController = PageController(viewportFraction: 0.80);
+  late PageController pageController;
   // значение текущей страницы
   double currentPageValue = 0.0;
   @override
   void initState() {
     super.initState();
-    //слушатель изменения страницы
+    pageController = PageController(viewportFraction: 0.8);    //слушатель изменения страницы
     pageController.addListener(() {
-
       setState(() {
         currentPageValue = pageController.page!;
+        
       });
     });
   }
@@ -46,42 +46,84 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     super.dispose();
   }
 
+  Future<void> update(PageController pageController, int page, double viewport) async {
+
+    pageController = PageController(
+      viewportFraction: viewport,
+      initialPage: page,
+    );
+
+  }
 
   @override
   Widget build(BuildContext context) {
     if (widget.heroes != null) {
-      return PageView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: widget.heroes!.length,
-          controller: pageController,
-          onPageChanged: (page) {
+      return /* CarouselSlider(
+
+        options: CarouselOptions(
+          viewportFraction: MediaQuery.of(context).orientation == Orientation.portrait? 0.8:0.5,
+          scrollPhysics: const BouncingScrollPhysics(),
+          height: double.infinity,
+          enlargeCenterPage: true,
+          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+          onPageChanged: (page,_){
             setState(() {
               ref.read(colorProvider.notifier).change(
                   widget.heroes![page].color!);
             });
           },
-          itemBuilder: (context, pagePosition) {
-            return pageViewAnimation(
-                pagePosition, hero: widget.heroes![pagePosition]);
-          });
+          enableInfiniteScroll: false,
+        ),
+        items: widget.heroes?.map((hero) {
+          return HeroCard(
+            hero: hero,
+            details: false,
+          );
+        }).toList(),
+      );*/
+          PageView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: widget.heroes!.length,
+                      controller: pageController,
+                      onPageChanged: (page) {
+                        setState(() {
+                          ref.read(colorProvider.notifier).change(
+                              widget.heroes![page].color!);
+                        });
+                      },
+                      itemBuilder: (context, pagePosition) {
+
+                        return  FractionallySizedBox(
+                          widthFactor: MediaQuery.of(context).orientation == Orientation.portrait? 1: 0.7,
+
+                          child: pageViewAnimation(
+                                    pagePosition, hero: widget.heroes![pagePosition]),
+                        );
+
+                      }
+            );
+
+
     }
 
     return ref.read(allDataBase).when(
 
         data: (data) {
-          return PageView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: data!.length,
-              controller: pageController,
-              onPageChanged: (page) {
-                setState(() {
-                  ref.read(colorProvider.notifier).change(data[page].color);
-                });
-              },
-              itemBuilder: (context, pagePosition) {
-                return pageViewAnimation(
-                    pagePosition, heroDB: data[pagePosition]);
-              });
+              return PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: data!.length,
+
+                  controller: pageController,
+                  onPageChanged: (page) {
+                    setState(() {
+                      ref.read(colorProvider.notifier).change(data[page].color);
+                    });
+                  },
+                  itemBuilder: (context, pagePosition) {
+                    return  pageViewAnimation(
+                          pagePosition, heroDB: data[pagePosition]);
+                  });
+
         },
         error: (error, stack) {
           return  NetworkErrorWidget(text: LocaleKeys.errorsErrorLoadDatabase.tr());
@@ -104,22 +146,23 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     return Transform(
         alignment: Alignment.center,
         transform: matrix,
-        child:   Card(
-            color: Colors.transparent,
-            margin: const EdgeInsets.only(bottom: 20),
-            semanticContainer: true,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            elevation: 10,
-            child: HeroCard(
-                    hero: hero,
-                    heroDB: heroDB,
-                    details: false,
-                  ),
+        child:    Card(
+                color: Colors.transparent,
+                margin: const EdgeInsets.only(bottom: 20),
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 10,
+                child: HeroCard(
+                        hero: hero,
+                        heroDB: heroDB,
+                        details: false,
+                      ),
 
-          ),
+              ),
+
         );
   }
 

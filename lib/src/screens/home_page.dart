@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
 
@@ -57,23 +58,33 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        Theme.of(context).brightness ==Brightness.light? marvelLogoDark:marvelLogo,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        LocaleKeys.mainText.tr(),
-                        style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                    Visibility(
+                      visible: MediaQuery.of(context).orientation == Orientation.portrait,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          Theme.of(context).brightness ==Brightness.light? marvelLogoDark:marvelLogo,
+                          width: MediaQuery.of(context).size.width * 0.5,
                         ),
                       ),
+                    ),
+                    Visibility(
+                      visible: MediaQuery.of(context).orientation == Orientation.portrait,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          LocaleKeys.mainText.tr(),
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: SizedBox(),
                     ),
                     Expanded(
                         child:  Consumer(
@@ -86,7 +97,9 @@ class _HomePageState extends State<HomePage> {
                                     checkInternetConnection();
                                     return ref.refresh(fetchAllHeroesInfo.future);
                                   },
-                                  child: (result |  ( dB.value?.length !=null) )? PageViewSlider(heroes: data):ListView(
+                                  child: (result |  ( dB.value?.length !=null) )?
+                                   PageViewSlider(heroes: data)
+                                      :ListView(
                                     children: [
                                       Text(
                                         LocaleKeys.connectionNotConnected.tr(),
