@@ -1,7 +1,7 @@
 # Marvel Heroes App
 
 <p align="center">
-  <img src="assets/for_readme/video.gif" width=300/>
+  <img src="assets/for_readme/video.gif" height=400/>
 </p>
 
 ## About The Project
