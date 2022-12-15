@@ -41,7 +41,7 @@ Work on this project has helped to master a significant range of technologies.
 
 ### Orientation
 
-|                       Light Theme                       |                       Dark Theme                        |
+|                       Portrait                       |                       Landscape                        |
 |:-------------------------------------------------------:|:-------------------------------------------------------:|
 | <img src="assets/for_readme/portrait.jpg" height="400"> | <img src="assets/for_readme/landscape.jpg" width="300"> | 
 
