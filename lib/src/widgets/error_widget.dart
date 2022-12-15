@@ -6,7 +6,7 @@ class NetworkErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(text,style: const TextStyle(color:
-    Colors.blue),));
+    return Center(child: Text(text,style: const TextStyle(fontSize: 30 , color:
+    Colors.red,fontWeight: FontWeight.bold),));
   }
 }

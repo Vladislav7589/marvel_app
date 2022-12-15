@@ -46,42 +46,10 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     super.dispose();
   }
 
-  Future<void> update(PageController pageController, int page, double viewport) async {
-
-    pageController = PageController(
-      viewportFraction: viewport,
-      initialPage: page,
-    );
-
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.heroes != null) {
-      return /* CarouselSlider(
-
-        options: CarouselOptions(
-          viewportFraction: MediaQuery.of(context).orientation == Orientation.portrait? 0.8:0.5,
-          scrollPhysics: const BouncingScrollPhysics(),
-          height: double.infinity,
-          enlargeCenterPage: true,
-          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-          onPageChanged: (page,_){
-            setState(() {
-              ref.read(colorProvider.notifier).change(
-                  widget.heroes![page].color!);
-            });
-          },
-          enableInfiniteScroll: false,
-        ),
-        items: widget.heroes?.map((hero) {
-          return HeroCard(
-            hero: hero,
-            details: false,
-          );
-        }).toList(),
-      );*/
-          PageView.builder(
+      return PageView.builder(
                       physics: const BouncingScrollPhysics(),
                       itemCount: widget.heroes!.length,
                       controller: pageController,
@@ -93,12 +61,8 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
                       },
                       itemBuilder: (context, pagePosition) {
 
-                        return  FractionallySizedBox(
-                          widthFactor: MediaQuery.of(context).orientation == Orientation.portrait? 1: 0.7,
-
-                          child: pageViewAnimation(
-                                    pagePosition, hero: widget.heroes![pagePosition]),
-                        );
+                        return   pageViewAnimation(
+                                    pagePosition, hero: widget.heroes![pagePosition]);
 
                       }
             );
@@ -143,27 +107,32 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
     if (position == currentPageValue.floor() - 1) currentScale = 1 - (currentPageValue - position) * (1 - scaleFactor);
 
     matrix = Matrix4.diagonal3Values(currentScale, currentScale, 1.0);
-    return Transform(
-        alignment: Alignment.center,
-        transform: matrix,
-        child:    Card(
-                color: Colors.transparent,
-                margin: const EdgeInsets.only(bottom: 20),
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 10,
-                child: HeroCard(
-                        hero: hero,
-                        heroDB: heroDB,
-                        details: false,
-                      ),
+    return FractionallySizedBox(
+      widthFactor: MediaQuery.of(context).orientation == Orientation.portrait?1:0.8,
 
-              ),
+      child:Transform(
+          alignment: Alignment.center,
+          transform: matrix,
+          child:     Card(
+                    color: Colors.transparent,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 10,
+                    child: HeroCard(
+                            hero: hero,
+                            heroDB: heroDB,
+                            details: false,
+                          ),
 
-        );
+                  ),
+          ),
+
+
+    );
   }
 
   Widget pageViewShimmer(){

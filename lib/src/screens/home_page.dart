@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
 
@@ -28,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    checkInternetConnection();
+
     super.initState();
   }
 
@@ -36,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     result = await InternetConnectionChecker().hasConnection;
     var snackBar = SnackBar(
       backgroundColor: result?Colors.green: Colors.grey,
-      content: result?  Text(LocaleKeys.connectionConnected.tr()): Text(LocaleKeys.connectionNotConnected.tr()),
+      content: result?  Text(LocaleKeys.connectionConnected.tr(), style: const TextStyle(fontWeight: FontWeight.bold),): Text(LocaleKeys.connectionNotConnected.tr()),
     );
     scaffoldKey.currentState?.showSnackBar(snackBar);
   }
@@ -46,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SizedBox(
           width: MediaQuery.of(context).size.width,
-          //color: backgroundColor,
           child: SafeArea(
               child: Stack(children: [
                 Consumer(
@@ -134,9 +132,9 @@ class _HomePageState extends State<HomePage> {
                           },
                         )
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: SizedBox(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).orientation == Orientation.portrait?10:0),
+                      child: const SizedBox(),
                     )
                   ],
                 ),

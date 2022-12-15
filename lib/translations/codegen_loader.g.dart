@@ -33,7 +33,7 @@ class CodegenLoader extends AssetLoader{
 static const Map<String,dynamic> ru = {
   "mainText": "Выбери своего героя",
   "missing": "Отсутствует",
-  "massage": {
+  "notification": {
     "button": "Смотреть"
   },
   "connection": {

@@ -30,8 +30,8 @@ class HeroCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
               child: Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white10),
                     borderRadius: BorderRadius.circular(20.0),
+                    border: details? Border.all(width: 0): Border.all(color: Colors.white10)
                 ),
                 child: Material(
                     type: MaterialType.transparency, // likely needed
@@ -67,20 +67,20 @@ class HeroCard extends StatelessWidget {
                         Positioned(
 
                           child: Container(
-                            padding: const EdgeInsets.only(left: 30,bottom: 30,right: 30),
+                            padding:  EdgeInsets.only(left: 30,bottom: MediaQuery.of(context).orientation == Orientation.portrait?30:20,right: 30),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text( hero?.name !=null ? '${hero?.name}' :  '${heroDB?.name}',
-                                    style: textStyle(30, FontWeight.bold)),
+                                    style: textStyle(MediaQuery.of(context).orientation == Orientation.portrait?30:25, FontWeight.bold)),
                                 const SizedBox(
                                   height: 8,
                                 ),
                                 if(details) Flexible(
                                   child: Text(
                                       hero?.description !=null ? hero?.description != '' ? '${hero?.description}' : LocaleKeys.missing.tr() :  heroDB?.description != '' ? '${heroDB?.description}' : LocaleKeys.missing.tr(),
-                                      style: textStyle(25, null),
+                                      style: textStyle( MediaQuery.of(context).orientation == Orientation.portrait?25:20, null),
                                       maxLines: MediaQuery.of(context).orientation == Orientation.portrait?18:7,
                                     textAlign: TextAlign.justify,
                                     overflow: TextOverflow.ellipsis,

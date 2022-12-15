@@ -15,7 +15,7 @@ const String scheme = 'http://';
 const String domain = 'gateway.marvel.com';
 const String pathGettingHeroes = '/v1/public/characters';
 
-const int offset = 200;
+const int offset = 199;
 const int amountHeroes = 8;
 
 const baseUrl = scheme + domain + pathGettingHeroes;

@@ -1,7 +1,7 @@
 {
   "mainText": "Выбери своего героя",
   "missing": "Отсутствует",
-  "massage":{
+  "notification":{
     "button":"Смотреть"
   },
   "connection":{
