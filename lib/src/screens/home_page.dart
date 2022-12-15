@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-
+    checkInternetConnection();
     super.initState();
   }
 
@@ -91,39 +91,20 @@ class _HomePageState extends State<HomePage> {
                             return ref.watch(fetchAllHeroesInfo).when(
                                 data: (data) {
                                 return RefreshIndicator(
+
                                   onRefresh: ()  {
                                     checkInternetConnection();
                                     return ref.refresh(fetchAllHeroesInfo.future);
                                   },
-                                  child: (result |  ( dB.value?.length !=null) )?
+                                  child: (result |  ( dB.value !=null) )?
                                    PageViewSlider(heroes: data)
-                                      :ListView(
-                                    children: [
-                                      Text(
-                                        LocaleKeys.connectionNotConnected.tr(),
-                                        style: const TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                       Text(
-                                        LocaleKeys.connectionSwipeConnection.tr(),
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
+                                      :NetworkErrorWidget(
+                                      text: LocaleKeys.errorsErrorLoadData.tr()),
                                 );
                           },
                                 error: (error, stack) =>
-                                NetworkErrorWidget(
-                                    text: LocaleKeys.errorsErrorLoadData.tr()),
+                                    NetworkErrorWidget(
+                                        text: LocaleKeys.errorsErrorLoadData.tr()),
                                 loading: () => const Center(
                                     child: CircularProgressIndicator(
                                       color: Colors.red,

@@ -46,6 +46,10 @@ class DioClient {
 
       return hero;
     } on DioError catch (e) {
+      if(e.type == DioErrorType.connectTimeout){
+        throw Exception("Connection  Timeout Exception");
+      }
+
       if (e.response != null) {
         return Future.error('Error! Code: ${e.response?.statusCode}');
       } else {
@@ -77,6 +81,9 @@ class DioClient {
       }
       return heroes;
     } on DioError catch (e) {
+      if(e.type == DioErrorType.connectTimeout){
+        throw Exception("Connection  Timeout Exception");
+      }
       e.response != null
           ? Future.error('Error! Code: ${e.response?.statusCode}')
           : Future.error('Request sending error: \n ${e.message}');

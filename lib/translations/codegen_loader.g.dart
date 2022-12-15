@@ -23,7 +23,7 @@ class CodegenLoader extends AssetLoader{
   "connection": {
     "connected": "Connected",
     "swipeConnection": "Swipe down to update",
-    "notConnected": "No internet connection"
+    "notConnected": "No internet connection or other error"
   },
   "errors": {
     "errorLoadData": "Load data error",
@@ -39,7 +39,7 @@ static const Map<String,dynamic> ru = {
   "connection": {
     "connected": "Подключено",
     "swipeConnection": "Проведите вниз чтобы обновить",
-    "notConnected": "Отсутствует интернет соединение"
+    "notConnected": "Отсутствует интернет соединение или возникла другая ошибка"
   },
   "errors": {
     "errorLoadData": "Ошибка загрузки данных",

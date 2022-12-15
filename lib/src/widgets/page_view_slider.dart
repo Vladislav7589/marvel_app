@@ -75,17 +75,17 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
         data: (data) {
               return PageView.builder(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: data!.length,
+                  itemCount: data?.length,
 
                   controller: pageController,
                   onPageChanged: (page) {
                     setState(() {
-                      ref.read(colorProvider.notifier).change(data[page].color);
+                      ref.read(colorProvider.notifier).change(data?[page].color);
                     });
                   },
                   itemBuilder: (context, pagePosition) {
                     return  pageViewAnimation(
-                          pagePosition, heroDB: data[pagePosition]);
+                          pagePosition, heroDB: data?[pagePosition]);
                   });
 
         },
