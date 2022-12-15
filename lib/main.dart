@@ -1,10 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:env_flutter/env_flutter.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marvel_app/src/screens/hero_details.dart';
 import 'package:marvel_app/src/screens/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:marvel_app/src/theme/themes.dart';
+import 'package:marvel_app/translations/codegen_loader.g.dart';
+import 'package:marvel_app/translations/locale_keys.g.dart';
 
 
 import 'firebase_options.dart';
@@ -15,7 +20,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> firebaseMessagingInitialize() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseMessaging.instance.getInitialMessage();
 }
@@ -24,10 +28,18 @@ Future<void> firebaseMessagingInitialize() async {
 final navigatorKey = GlobalKey<NavigatorState>();
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
+
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await dotenv.load();
   firebaseMessagingInitialize();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ru')],
+      path: 'assets/translations',
+      assetLoader: const CodegenLoader(),
+      fallbackLocale: const Locale('en'),
+      child: const ProviderScope(child: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -59,13 +71,16 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       scaffoldMessengerKey: scaffoldKey,
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Marvel heroes',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home:   const HomePage(),
     );
   }
@@ -74,11 +89,11 @@ class _MyAppState extends State<MyApp> {
 }
 SnackBar showSnackBar(RemoteMessage message){
   return SnackBar(
-    content:  Text('Show hero: \n${message.notification?.body}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+    content:  Text('${message.notification?.title}\n${message.notification?.body}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
     duration: const Duration(seconds: 10),
     backgroundColor: Colors.redAccent,
     action: SnackBarAction(
-      label:'Check',
+      label:LocaleKeys.notificationButton.tr(),
       onPressed: () {
         navigatorKey.currentState?.push(MaterialPageRoute(
             builder: (context) => HeroDetails(
