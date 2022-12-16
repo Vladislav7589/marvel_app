@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:flutter/services.dart';
+
 import 'package:marvel_app/translations/locale_keys.g.dart';
 
 
@@ -14,7 +19,6 @@ import '../widgets/page_view_slider.dart';
 import '../widgets/error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -23,22 +27,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late bool result = false;
+  late bool isInternet = false;
+  ConnectivityResult connectionStatus = ConnectivityResult.none;
+  final Connectivity connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> connectivitySubscription;
 
   @override
   void initState() {
-    checkInternetConnection();
+    connectivitySubscription = connectivity.onConnectivityChanged.listen(updateConnectionStatus);
     super.initState();
   }
-
-  Future<void> checkInternetConnection() async {
-    result = await InternetConnectionChecker().hasConnection;
-    var snackBar = SnackBar(
-      backgroundColor: result?Colors.green: Colors.grey,
-      content: result?  Text(LocaleKeys.connectionConnected.tr(), style: const TextStyle(fontWeight: FontWeight.bold),): Text(LocaleKeys.connectionNotConnected.tr()),
-    );
-    scaffoldKey.currentState?.showSnackBar(snackBar);
+  @override
+  void dispose() {
+    connectivitySubscription.cancel();
+    super.dispose();
   }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      log('Couldn\'t check connectivity status', error: e);
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return updateConnectionStatus(result);
+  }
+  Future<void> updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      connectionStatus = result;
+      switch(result){
+        case ConnectivityResult.wifi:
+          isInternet = true;
+          break;
+        case ConnectivityResult.ethernet:
+          isInternet = true;
+          break;
+        case ConnectivityResult.mobile:
+          isInternet = true;
+          break;
+        case ConnectivityResult.none:
+          isInternet = false;
+          break;
+        default: break;
+      }
+      var snackBar = SnackBar(
+        duration: const Duration(seconds: 5),
+        backgroundColor: isInternet?Colors.green: Colors.grey,
+        content: isInternet?  Text(LocaleKeys.connectionConnected.tr(), style: const TextStyle(fontWeight: FontWeight.bold),): Text(LocaleKeys.connectionNotConnected.tr()),
+      );
+      scaffoldKey.currentState?.showSnackBar(snackBar);
+
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,28 +134,28 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                         child:  Consumer(
                           builder: (_, WidgetRef ref, __) {
-                            var dB = ref.watch(allDataBase);
-                            return ref.watch(fetchAllHeroesInfo).when(
-                                data: (data) {
-                                return RefreshIndicator(
+                            var db = ref.watch(allDataBase);
+                            return RefreshIndicator(
 
-                                  onRefresh: ()  {
-                                    checkInternetConnection();
-                                    return ref.refresh(fetchAllHeroesInfo.future);
-                                  },
-                                  child: (result |  ( dB.value !=null) )?
-                                   PageViewSlider(heroes: data)
-                                      :NetworkErrorWidget(
-                                      text: LocaleKeys.errorsErrorLoadData.tr()),
-                                );
+                              onRefresh: ()  {
+                                updateConnectionStatus(connectionStatus);
+                                  return ref.refresh(fetchAllHeroesInfo.future);
+
+                              },
+                              child:  ref.watch(fetchAllHeroesInfo).when(
+                                  data: (data) {
+                                  return PageViewSlider(heroes: data);
                           },
-                                error: (error, stack) =>
-                                    NetworkErrorWidget(
-                                        text: LocaleKeys.errorsErrorLoadData.tr()),
-                                loading: () => const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.red,
-                                    )));
+                                  error: (error, stack) => db.value != null? const PageViewSlider(heroes: null):
+                                     NetworkErrorWidget(
+                                        text: LocaleKeys.errorsErrorLoadData.tr(),
+                                  ),
+
+                                  loading: () => const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.red,
+                                      ))),
+                            );
 
                           },
                         )

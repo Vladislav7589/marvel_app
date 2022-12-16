@@ -19,7 +19,7 @@ dependencies:
   cached_network_image: ^3.2.2
   palette_generator: ^0.3.3+2
   easy_localization: ^3.0.1
-
+  connectivity_plus: ^3.0.2
   flutter_riverpod: ^2.1.1
   env_flutter: ^0.1.4
 
@@ -27,7 +27,6 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.0
   path_provider: ^2.0.0
   path: ^1.8.2
-  internet_connection_checker: ^1.0.0+1
   firebase_core: ^2.3.0
   firebase_messaging: ^14.1.2
   flutter_launcher_icons: ^0.11.0

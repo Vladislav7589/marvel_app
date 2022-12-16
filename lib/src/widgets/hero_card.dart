@@ -11,7 +11,6 @@ import 'package:marvel_app/src/widgets/shimmer.dart';
 import '../styles/styles.dart';
 import 'dart:convert';
 
-import 'error_widget.dart';
 
 class HeroCard extends StatelessWidget {
 
@@ -25,7 +24,7 @@ class HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return  ( hero!=null || heroDB != null)? Hero(
+    return Hero(
             transitionOnUserGestures: true,
             tag:  hero?.id !=null ? '${hero?.id}' :  '${heroDB?.id}',
             child: ClipRRect(
@@ -48,7 +47,7 @@ class HeroCard extends StatelessWidget {
                                   placeholder: (context, url) =>
                                       const ShimmerWidget(),
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                      const Icon(Icons.wifi_off_outlined),
                                 ):
                                 Image.memory(base64Decode('${heroDB?.image}'),
                                   fit: BoxFit.cover,
@@ -114,7 +113,7 @@ class HeroCard extends StatelessWidget {
               ),
             ),
 
-          ):details?Container():NetworkErrorWidget(
-        text: LocaleKeys.errorsErrorLoadData.tr());
+
+    );
   }
 }

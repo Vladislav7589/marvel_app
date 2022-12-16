@@ -50,49 +50,46 @@ class _PageViewSliderState extends ConsumerState<PageViewSlider> {
   Widget build(BuildContext context) {
     if (widget.heroes != null) {
       return PageView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: widget.heroes!.length,
-                      controller: pageController,
-                      onPageChanged: (page) {
-                        setState(() {
-                          ref.read(colorProvider.notifier).change(
-                              widget.heroes![page].color!);
-                        });
-                      },
-                      itemBuilder: (context, pagePosition) {
-
-                        return   pageViewAnimation(
-                                    pagePosition, hero: widget.heroes![pagePosition]);
-
-                      }
-            );
-
-
+          physics: const BouncingScrollPhysics(),
+          itemCount: widget.heroes?.length,
+          controller: pageController,
+          onPageChanged: (page) {
+            setState(() {
+              ref.read(colorProvider.notifier).change(
+                  widget.heroes?[page].color);
+            });
+          },
+          itemBuilder: (context, pagePosition) {
+            return pageViewAnimation(
+                pagePosition, hero: widget.heroes?[pagePosition]);
+          }
+      );
     }
-
     return ref.read(allDataBase).when(
 
         data: (data) {
-              return PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: data?.length,
+          return  PageView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: data?.length,
 
-                  controller: pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      ref.read(colorProvider.notifier).change(data?[page].color);
-                    });
-                  },
-                  itemBuilder: (context, pagePosition) {
-                    return  pageViewAnimation(
-                          pagePosition, heroDB: data?[pagePosition]);
-                  });
-
+              controller: pageController,
+              onPageChanged: (page) {
+                setState(() {
+                  ref.read(colorProvider.notifier).change(data?[page].color);
+                });
+              },
+              itemBuilder: (context, pagePosition) {
+                return pageViewAnimation(
+                    pagePosition, heroDB: data?[pagePosition]);
+              });
         },
         error: (error, stack) {
-          return  NetworkErrorWidget(text: LocaleKeys.errorsErrorLoadDatabase.tr());
+          return NetworkErrorWidget(
+              text: LocaleKeys.errorsErrorLoadDatabase.tr());
         },
-        loading: () => Center(child: pageViewShimmer()));
+        loading:() {
+        return Center(child: pageViewShimmer());
+    });
 
 
   }

@@ -13,7 +13,7 @@ class NetworkErrorWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView(
         children: [
-          Center(child: Text(text,style: const TextStyle(fontSize: 30 , color:
+          Center(child: Text(text,textAlign:TextAlign.center, style: const TextStyle(fontSize: 30 , color:
           Colors.red,fontWeight: FontWeight.bold),)),
           Text(
             LocaleKeys.connectionSwipeConnection.tr(),
