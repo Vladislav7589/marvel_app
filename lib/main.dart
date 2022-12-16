@@ -10,8 +10,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:marvel_app/src/theme/themes.dart';
 import 'package:marvel_app/translations/codegen_loader.g.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
-
-
 import 'firebase_options.dart';
 
 
@@ -66,6 +64,7 @@ class _MyAppState extends State<MyApp> {
             heroId: int.parse(message.data['heroId']),
           )));
     });
+
 }
 
   @override

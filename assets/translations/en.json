@@ -7,7 +7,7 @@
   "connection":{
     "connected":"Connected",
     "swipeConnection":"Swipe down to update",
-    "notConnected":"No internet connection or other error"
+    "notConnected":"No internet connection"
   },
   "errors":{
     "errorLoadData":"Load data error",

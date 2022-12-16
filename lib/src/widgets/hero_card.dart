@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marvel_app/src/database/database.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
-
 import '../../constants.dart';
 import '../screens/hero_details.dart';
 import 'package:marvel_app/src/models/heroes.dart';
@@ -11,9 +11,8 @@ import 'package:marvel_app/src/widgets/shimmer.dart';
 import '../styles/styles.dart';
 import 'dart:convert';
 
-import 'error_widget.dart';
 
-class HeroCard extends StatelessWidget {
+class HeroCard extends ConsumerWidget {
 
   final HeroMarvel? hero;
   final MarvelHeroData? heroDB;
@@ -23,9 +22,9 @@ class HeroCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
 
-    return  ( hero!=null || heroDB != null)? Hero(
+    return Hero(
             transitionOnUserGestures: true,
             tag:  hero?.id !=null ? '${hero?.id}' :  '${heroDB?.id}',
             child: ClipRRect(
@@ -48,7 +47,7 @@ class HeroCard extends StatelessWidget {
                                   placeholder: (context, url) =>
                                       const ShimmerWidget(),
                                   errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                      const Icon(Icons.wifi_off_outlined),
                                 ):
                                 Image.memory(base64Decode('${heroDB?.image}'),
                                   fit: BoxFit.cover,
@@ -114,7 +113,7 @@ class HeroCard extends StatelessWidget {
               ),
             ),
 
-          ):details?Container():NetworkErrorWidget(
-        text: LocaleKeys.errorsErrorLoadData.tr());
+
+    );
   }
 }

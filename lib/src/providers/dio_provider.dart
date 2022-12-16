@@ -14,12 +14,12 @@ final dioProvider = Provider<DioClient>(
 
 final fetchAllHeroesInfo = FutureProvider<List<HeroMarvel>?>((ref) async {
   var data = await ref.watch(dioProvider).getAllHeroesInfo();
-  if(data!=null){
+  if(data!=null && data.isNotEmpty){
     ref.watch(colorProvider.notifier).change(data[0].color);
     ref.watch(insertAllHeroesInfoToDataBase(data));
+    return data;
   }
-
-  return data;
+  return null;
 });
 
 final fetchHeroInfo = FutureProvider.family<HeroMarvel, int>((ref, id) async {
@@ -35,27 +35,16 @@ class DioClient {
     var ts = DateTime.now();
     var hash = hashGenerator(ts);
     var apikey = dotenv.env['API_KEY'];
-    try {
-      Response response = await dio.get('$baseUrl/$id', queryParameters: {
-        'apikey': apikey,
-        'hash': hash,
-        'ts': ts.toString(),
-      });
-      var result = response.data['data']['results'][0];
-      hero = HeroMarvel.fromJson(result);
 
-      return hero;
-    } on DioError catch (e) {
-      if(e.type == DioErrorType.connectTimeout){
-        throw Exception("Connection  Timeout Exception");
-      }
+    Response response = await dio.get('$baseUrl/$id', queryParameters: {
+      'apikey': apikey,
+      'hash': hash,
+      'ts': ts.toString(),
+    });
+    var result = response.data['data']['results'][0];
+    hero = HeroMarvel.fromJson(result);
 
-      if (e.response != null) {
-        return Future.error('Error! Code: ${e.response?.statusCode}');
-      } else {
-        return Future.error('Request sending error: \n ${e.message}');
-      }
-    }
+    return hero;
   }
 
   Future<List<HeroMarvel>?> getAllHeroesInfo() async {
@@ -72,22 +61,22 @@ class DioClient {
       });
 
       var result = response.data['data'];
-      heroes = Heroes.fromJson(result).heroMarvel!;
+      heroes = Heroes
+          .fromJson(result)
+          .heroMarvel!;
       for (var hero in heroes) {
         hero.color = hero.imageUrl != null
             ? hero.color =
-                await HeroMarvel.updatePaletteGenerator('${hero.imageUrl}')
+        await HeroMarvel.updatePaletteGenerator('${hero.imageUrl}')
             : hero.color = backgroundColor.value;
       }
       return heroes;
     } on DioError catch (e) {
-      if(e.type == DioErrorType.connectTimeout){
-        throw Exception("Connection  Timeout Exception");
+      if (e.response != null) {
+        return Future.error('Error! Code: ${e.response?.statusCode}');
+      } else {
+        return Future.error('Request sending error: \n ${e.message}');
       }
-      e.response != null
-          ? Future.error('Error! Code: ${e.response?.statusCode}')
-          : Future.error('Request sending error: \n ${e.message}');
     }
-    return null;
   }
 }
