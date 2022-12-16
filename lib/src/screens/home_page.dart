@@ -138,9 +138,7 @@ class _HomePageState extends State<HomePage> {
                             return RefreshIndicator(
 
                               onRefresh: ()  {
-                                updateConnectionStatus(connectionStatus);
                                   return ref.refresh(fetchAllHeroesInfo.future);
-
                               },
                               child:  ref.watch(fetchAllHeroesInfo).when(
                                   data: (data) {

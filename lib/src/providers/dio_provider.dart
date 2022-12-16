@@ -36,22 +36,22 @@ class DioClient {
     var hash = hashGenerator(ts);
     var apikey = dotenv.env['API_KEY'];
 
-      Response response = await dio.get('$baseUrl/$id', queryParameters: {
-        'apikey': apikey,
-        'hash': hash,
-        'ts': ts.toString(),
-      });
-      var result = response.data['data']['results'][0];
-      hero = HeroMarvel.fromJson(result);
+    Response response = await dio.get('$baseUrl/$id', queryParameters: {
+      'apikey': apikey,
+      'hash': hash,
+      'ts': ts.toString(),
+    });
+    var result = response.data['data']['results'][0];
+    hero = HeroMarvel.fromJson(result);
 
-      return hero;
+    return hero;
   }
 
   Future<List<HeroMarvel>?> getAllHeroesInfo() async {
     List<HeroMarvel> heroes = [];
     DateTime ts = DateTime.now();
 
-
+    try {
       Response response = await dio.get(baseUrl, queryParameters: {
         'apikey': dotenv.env['API_KEY'],
         'hash': hashGenerator(ts),
@@ -61,14 +61,22 @@ class DioClient {
       });
 
       var result = response.data['data'];
-      heroes = Heroes.fromJson(result).heroMarvel!;
+      heroes = Heroes
+          .fromJson(result)
+          .heroMarvel!;
       for (var hero in heroes) {
         hero.color = hero.imageUrl != null
             ? hero.color =
-                await HeroMarvel.updatePaletteGenerator('${hero.imageUrl}')
+        await HeroMarvel.updatePaletteGenerator('${hero.imageUrl}')
             : hero.color = backgroundColor.value;
       }
       return heroes;
-
+    } on DioError catch (e) {
+      if (e.response != null) {
+        return Future.error('Error! Code: ${e.response?.statusCode}');
+      } else {
+        return Future.error('Request sending error: \n ${e.message}');
+      }
+    }
   }
 }

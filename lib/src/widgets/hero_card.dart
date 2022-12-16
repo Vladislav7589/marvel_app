@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:marvel_app/src/database/database.dart';
 import 'package:marvel_app/translations/locale_keys.g.dart';
-
 import '../../constants.dart';
 import '../screens/hero_details.dart';
 import 'package:marvel_app/src/models/heroes.dart';
@@ -12,7 +12,7 @@ import '../styles/styles.dart';
 import 'dart:convert';
 
 
-class HeroCard extends StatelessWidget {
+class HeroCard extends ConsumerWidget {
 
   final HeroMarvel? hero;
   final MarvelHeroData? heroDB;
@@ -22,7 +22,7 @@ class HeroCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
 
     return Hero(
             transitionOnUserGestures: true,
