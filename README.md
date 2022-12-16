@@ -5,9 +5,11 @@
 </p>
 
 ## About The Project
-The project was created as part of an internship at [Effective](https://effective.band/).
-
-Work on this project has helped to master a significant range of technologies.
+The project was created as part of an internship at [Effective](https://effective .band /).
+The app shows a list of Marvel heroes.
+On the main screen there is a carousel of hero cards, each of which can be clicked to open a screen containing detailed information.
+It is also possible to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging), which contain a link to the information card of a particular hero.
+Working on this project has helped to master a significant range of technologies.
 
 ## Topics
 
